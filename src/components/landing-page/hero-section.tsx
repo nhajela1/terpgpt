@@ -1,4 +1,7 @@
+"use client";
+
 import React from "react";
+import { useRouter } from "next/navigation";
 import {
   ArrowRight,
   BookOpen,
@@ -9,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
 const HeroSection: React.FC = () => {
+  const router = useRouter();
   return (
     <div className="bg-gradient-to-br from-purple-900 via-indigo-800 to-purple-800 text-white">
       <div className="container mx-auto px-4 py-20 sm:py-28">
@@ -25,6 +29,9 @@ const HeroSection: React.FC = () => {
               variant="secondary"
               size="lg"
               className="font-semibold text-indigo-900 bg-white hover:bg-purple-100 transition-colors"
+              onClick={() => {
+                router.push("/chat");
+              }}
             >
               Get Started
               <ArrowRight className="ml-2" size={20} />

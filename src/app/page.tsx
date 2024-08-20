@@ -6,6 +6,8 @@ import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import HeroSection from "@/components/landing-page/hero-section";
+import FAQSection from "@/components/landing-page/faq-section";
+import ContactSection from "@/components/landing-page/contact-section";
 
 export default function Home() {
   // Set up the state for the messages
@@ -81,6 +83,8 @@ export default function Home() {
   return (
     <>
       <HeroSection />
+      <FAQSection />
+      <ContactSection />
       <div className="flex items-center justify-center min-h-screen bg-background">
         <Card className="w-[500px] h-[700px]">
           <CardContent className="p-6 flex flex-col h-full">

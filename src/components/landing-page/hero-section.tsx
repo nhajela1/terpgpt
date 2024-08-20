@@ -10,39 +10,39 @@ import { Card, CardContent } from "@/components/ui/card";
 
 const HeroSection: React.FC = () => {
   return (
-    <div className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white">
-      <div className="container mx-auto px-4 py-16 sm:py-24">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+    <div className="bg-gradient-to-br from-purple-900 via-indigo-800 to-purple-800 text-white">
+      <div className="container mx-auto px-4 py-20 sm:py-28">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <div>
-            <h1 className="text-4xl sm:text-5xl font-bold mb-6">
+            <h1 className="text-5xl sm:text-6xl font-bold mb-8 leading-tight">
               Welcome to Profsly AI
             </h1>
-            <p className="text-xl mb-8">
+            <p className="text-xl mb-10 text-purple-100">
               Your intelligent AI assistant for all university course
               information. Ask any question, get instant answers!
             </p>
             <Button
               variant="secondary"
               size="lg"
-              className="font-semibold text-indigo-600"
+              className="font-semibold text-indigo-900 bg-white hover:bg-purple-100 transition-colors"
             >
               Get Started
               <ArrowRight className="ml-2" size={20} />
             </Button>
           </div>
-          <div className="space-y-6">
+          <div className="space-y-8">
             <FeatureCard
-              icon={<BookOpen className="h-6 w-6" />}
+              icon={<BookOpen className="h-8 w-8" />}
               title="Comprehensive Course Info"
               description="Access detailed information about any university course."
             />
             <FeatureCard
-              icon={<GraduationCap className="h-6 w-6" />}
+              icon={<GraduationCap className="h-8 w-8" />}
               title="Professor Insights"
               description="Learn about professors' backgrounds and teaching styles."
             />
             <FeatureCard
-              icon={<MessageSquare className="h-6 w-6" />}
+              icon={<MessageSquare className="h-8 w-8" />}
               title="24/7 Assistance"
               description="Get answers to your questions anytime, anywhere."
             />
@@ -59,12 +59,12 @@ const FeatureCard: React.FC<{
   description: string;
 }> = ({ icon, title, description }) => {
   return (
-    <Card className="bg-white bg-opacity-10 border-0">
-      <CardContent className="flex items-center p-4">
-        <div className="mr-4 text-white">{icon}</div>
+    <Card className="bg-white bg-opacity-10 border-0 backdrop-blur-sm hover:bg-opacity-20 transition-all">
+      <CardContent className="flex items-center p-6">
+        <div className="mr-6 text-purple-300">{icon}</div>
         <div>
-          <h3 className="font-semibold text-white text-lg">{title}</h3>
-          <p className="text-sm text-gray-200">{description}</p>
+          <h3 className="font-semibold text-white text-xl mb-2">{title}</h3>
+          <p className="text-purple-100">{description}</p>
         </div>
       </CardContent>
     </Card>

@@ -1,80 +1,47 @@
-"use client";
-
-import React from "react";
-import { useRouter } from "next/navigation";
-import {
-  ArrowRight,
-  BookOpen,
-  GraduationCap,
-  MessageSquare,
-} from "lucide-react";
+import Link from "next/link";
+import Image from 'next/image';
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 
-const HeroSection: React.FC = () => {
-  const router = useRouter();
+const HeroSection = () => {
   return (
-    <div className="bg-gradient-to-br from-purple-900 via-indigo-800 to-purple-800 text-white">
-      <div className="container mx-auto px-4 py-20 sm:py-28">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-          <div>
-            <h1 className="text-5xl sm:text-6xl font-bold mb-8 leading-tight">
-              Welcome to Profsly AI
+    <section
+      id="hero"
+      className="w-full py-12 md:py-24 lg:py-32 xl:py-12 bg-gradient-to-br from-purple-100 via-blue-100 to-teal-100 dark:from-gray-900 dark:via-purple-900 dark:to-blue-900 relative overflow-hidden"
+    >
+      <div className="absolute inset-0 bg-grid-slate-900/[0.04] bg-[bottom_1px_center] dark:bg-grid-slate-400/[0.05] dark:bg-bottom dark:border-b dark:border-slate-100/5"></div>
+      <div className="absolute inset-0 bg-gradient-to-t from-white via-white/80 to-white/0 dark:from-gray-900 dark:via-gray-900/80 dark:to-gray-900/0"></div>
+      <div className="container px-4 md:px-6 relative z-10">
+        <div className="flex flex-col items-center space-y-4 text-center">
+          <div className="space-y-2">
+            <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl/none bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-blue-600 drop-shadow-sm">
+              Welcome to Kards AI
             </h1>
-            <p className="text-xl mb-10 text-purple-100">
-              Your intelligent AI assistant for all university course
-              information. Ask any question, get instant answers!
+            <p className="mx-auto max-w-[700px] text-gray-700 md:text-xl dark:text-gray-300">
+              Revolutionize your learning with AI-powered flashcards. Study
+              smarter, not harder.
             </p>
-            <Button
-              variant="secondary"
-              size="lg"
-              className="font-semibold text-indigo-900 bg-white hover:bg-purple-100 transition-colors"
-              onClick={() => {
-                router.push("/chat");
-              }}
-            >
-              Get Started
-              <ArrowRight className="ml-2" size={20} />
-            </Button>
           </div>
-          <div className="space-y-8">
-            <FeatureCard
-              icon={<BookOpen className="h-8 w-8" />}
-              title="Comprehensive Course Info"
-              description="Access detailed information about any university course."
-            />
-            <FeatureCard
-              icon={<GraduationCap className="h-8 w-8" />}
-              title="Professor Insights"
-              description="Learn about professors' backgrounds and teaching styles."
-            />
-            <FeatureCard
-              icon={<MessageSquare className="h-8 w-8" />}
-              title="24/7 Assistance"
-              description="Get answers to your questions anytime, anywhere."
-            />
+          <div className="space-x-4">
+            <Link href="/sign-up">
+              <Button className="bg-purple-600 hover:bg-purple-700 text-white shadow-lg hover:shadow-xl transition-all duration-200">
+                Get Started
+              </Button>
+            </Link>
+            <Link href="/sign-in">
+              <Button
+                variant="outline"
+                className="border-purple-600 text-purple-600 hover:bg-purple-100 shadow-lg hover:shadow-xl transition-all duration-200"
+              >
+                Sign In
+              </Button>
+            </Link>
+          </div>
+          <div className="flex items-center space-x-4">
+            <Image src="/landing-gif.gif" width={864} height={576} alt="Landing Gif" />
           </div>
         </div>
       </div>
-    </div>
-  );
-};
-
-const FeatureCard: React.FC<{
-  icon: React.ReactNode;
-  title: string;
-  description: string;
-}> = ({ icon, title, description }) => {
-  return (
-    <Card className="bg-white bg-opacity-10 border-0 backdrop-blur-sm hover:bg-opacity-20 transition-all">
-      <CardContent className="flex items-center p-6">
-        <div className="mr-6 text-purple-300">{icon}</div>
-        <div>
-          <h3 className="font-semibold text-white text-xl mb-2">{title}</h3>
-          <p className="text-purple-100">{description}</p>
-        </div>
-      </CardContent>
-    </Card>
+    </section>
   );
 };
 

@@ -101,51 +101,53 @@ export default function Chat() {
   return (
     <div className="w-full flex bg-gray-100 pl-4">
       <Card className="w-full flex flex-col overflow-hidden">
-        <CardContent className="flex-grow p-4">
-          <ScrollArea className="h-full pr-4">
-            {messages.map((message, index) => (
-              <div
-                key={index}
-                className={`mb-4 ${
-                  message.role === "user" ? "text-right" : "text-left"
-                }`}
-              >
+        <ScrollArea>
+          <CardContent className="flex-grow p-4">
+            <ScrollArea>
+              {messages.map((message, index) => (
                 <div
-                  className={`inline-block p-3 rounded-lg ${
-                    message.role === "user"
-                      ? "bg-blue-500 text-white"
-                      : "bg-gray-200 text-gray-800"
+                  key={index}
+                  className={`mb-4 ${
+                    message.role === "user" ? "text-right" : "text-left"
                   }`}
                 >
-                  <ReactMarkdown>{message.content}</ReactMarkdown>
+                  <div
+                    className={`inline-block p-3 rounded-lg ${
+                      message.role === "user"
+                        ? "bg-blue-500 text-white"
+                        : "bg-gray-200 text-gray-800"
+                    }`}
+                  >
+                    <ReactMarkdown>{message.content}</ReactMarkdown>
+                  </div>
                 </div>
-              </div>
-            ))}
-          </ScrollArea>
-        </CardContent>
-        <CardFooter className="p-4 bg-white border-t">
-          <div className="flex w-full items-center space-x-2">
-            <Input
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              onKeyDown={handleKeyPress}
-              placeholder="Type your message here..."
-              className="flex-grow"
-            />
-            <Button
-              onClick={sendMessage}
-              disabled={loading || message.trim() === ""}
-              className="bg-blue-500 hover:bg-blue-600 text-white"
-            >
-              {loading ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                <Send className="h-4 w-4" />
-              )}
-              <span className="ml-2">Send</span>
-            </Button>
-          </div>
-        </CardFooter>
+              ))}
+            </ScrollArea>
+          </CardContent>
+          <CardFooter className="p-4 bg-white border-t">
+            <div className="flex w-full items-center space-x-2">
+              <Input
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                onKeyDown={handleKeyPress}
+                placeholder="Type your message here..."
+                className="flex-grow"
+              />
+              <Button
+                onClick={sendMessage}
+                disabled={loading || message.trim() === ""}
+                className="bg-blue-500 hover:bg-blue-600 text-white"
+              >
+                {loading ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Send className="h-4 w-4" />
+                )}
+                <span className="ml-2">Send</span>
+              </Button>
+            </div>
+          </CardFooter>
+        </ScrollArea>
       </Card>
     </div>
   );

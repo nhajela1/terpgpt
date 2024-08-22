@@ -99,11 +99,10 @@ export default function Chat() {
   }
 
   return (
-    <div className="w-full flex bg-gray-100 pl-4">
-      <Card className="w-full flex flex-col overflow-hidden">
-        <ScrollArea>
-          <CardContent className="flex-grow p-4">
-            <ScrollArea>
+    <div className="h-full w-full flex bg-gray-100 pl-4">
+      <Card className="h-full w-full flex flex-col overflow-hidden">
+        <ScrollArea className="flex-grow">
+          <CardContent className="p-4">
               {messages.map((message, index) => (
                 <div
                   key={index}
@@ -122,32 +121,31 @@ export default function Chat() {
                   </div>
                 </div>
               ))}
-            </ScrollArea>
           </CardContent>
-          <CardFooter className="p-4 bg-white border-t">
-            <div className="flex w-full items-center space-x-2">
-              <Input
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                onKeyDown={handleKeyPress}
-                placeholder="Type your message here..."
-                className="flex-grow"
-              />
-              <Button
-                onClick={sendMessage}
-                disabled={loading || message.trim() === ""}
-                className="bg-blue-500 hover:bg-blue-600 text-white"
-              >
-                {loading ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : (
-                  <Send className="h-4 w-4" />
-                )}
-                <span className="ml-2">Send</span>
-              </Button>
-            </div>
-          </CardFooter>
         </ScrollArea>
+        <CardFooter className="flex p-4 bg-white border-t">
+          <div className="flex w-full items-center space-x-2">
+            <Input
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              onKeyDown={handleKeyPress}
+              placeholder="Type your message here..."
+              className="flex-grow"
+            />
+            <Button
+              onClick={sendMessage}
+              disabled={loading || message.trim() === ""}
+              className="bg-blue-500 hover:bg-blue-600 text-white"
+            >
+              {loading ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Send className="h-4 w-4" />
+              )}
+              <span className="ml-2">Send</span>
+            </Button>
+          </div>
+        </CardFooter>
       </Card>
     </div>
   );

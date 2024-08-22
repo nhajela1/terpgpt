@@ -82,7 +82,7 @@ export default function ChatPage() {
       </Card>
 
       {/* Review cards and chat sections */}
-      <div className="flex" id="review-chat-section" style={{ maxHeight: "calc(80vh)" }}>
+      <div className="h-full flex" id="review-chat-section" style={{ maxHeight: "calc(80vh)" }}>
         {/* Review Cards section */}
         <ScrollArea>
           <ReviewCards

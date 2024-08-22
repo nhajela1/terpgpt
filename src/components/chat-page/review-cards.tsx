@@ -50,14 +50,14 @@ const ReviewCards: React.FC<ReviewCardsProps> = ({
           )
           .map((review, index) => (
             <ScrollArea>
-            <Card key={index} className="mb-4">
-              <CardContent className="pt-3 pb-3">
-                <h3 className="font-semibold text-lg mb-2">
-                  {review.subject} - {review.professor} ({review.stars}/5 stars)
-                </h3>
-                <ReactMarkdown>{review.review}</ReactMarkdown>
-              </CardContent>
-            </Card>
+              <Card key={index} className="mb-4">
+                <CardContent className="pt-3 pb-3">
+                  <h3 className="font-semibold text-lg mb-2">
+                    {review.subject} - {review.professor} ({review.stars}/5 stars)
+                  </h3>
+                  <ReactMarkdown>{review.review}</ReactMarkdown>
+                </CardContent>
+              </Card>
             </ScrollArea>
           ))}
           </div>

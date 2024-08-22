@@ -156,54 +156,81 @@ export default function ChatPage() {
         </CardContent>
       </Card>
 
-      {/* Chat section */}
-      <Card className="flex-grow flex flex-col overflow-hidden">
-        <CardContent className="flex-grow p-4">
-          <ScrollArea className="h-full pr-4">
-            {messages.map((message, index) => (
-              <div
-                key={index}
-                className={`mb-4 ${
-                  message.role === "user" ? "text-right" : "text-left"
-                }`}
-              >
+      {/* Sidebar and chat sections */}
+      <div className="flex-grow flex sm:flex-row space-y-0 sm:space-y-0 sm:space-x-4">
+        {/* Sidebar */}
+        <Card className="w-full sm:w-1/3 h-full sm:h-auto mb-4 sm:mb-0 overflow-y-auto">
+          {/* Reviews for chosen subject and professor */}
+          <CardContent className="p-4">
+            <h2 className="text-xl font-semibold mb-4">Reviews for chosen subject and professor:</h2>
+            {reviews.reviews
+              .filter(
+                (review) =>
+                  (!selectedSubject || review.subject === selectedSubject) &&
+                  (!selectedProfessor || review.professor === selectedProfessor)
+              )
+              .map((review, index) => (
+                <Card key={index} className="mb-4">
+                  <CardContent>
+                    <h3 className="font-semibold text-lg mb-2">
+                      {review.subject} - {review.professor}
+                    </h3>
+                    <ReactMarkdown>{review.review}</ReactMarkdown>
+                  </CardContent>
+                </Card>
+              ))}
+          </CardContent>
+        </Card>
+
+        {/* Chat section */}
+        <Card className="flex-grow flex flex-col overflow-hidden">
+          <CardContent className="flex-grow p-4">
+            <ScrollArea className="h-full pr-4">
+              {messages.map((message, index) => (
                 <div
-                  className={`inline-block p-3 rounded-lg ${
-                    message.role === "user"
-                      ? "bg-blue-500 text-white"
-                      : "bg-gray-200 text-gray-800"
+                  key={index}
+                  className={`mb-4 ${
+                    message.role === "user" ? "text-right" : "text-left"
                   }`}
                 >
-                  <ReactMarkdown>{message.content}</ReactMarkdown>
+                  <div
+                    className={`inline-block p-3 rounded-lg ${
+                      message.role === "user"
+                        ? "bg-blue-500 text-white"
+                        : "bg-gray-200 text-gray-800"
+                    }`}
+                  >
+                    <ReactMarkdown>{message.content}</ReactMarkdown>
+                  </div>
                 </div>
-              </div>
-            ))}
-          </ScrollArea>
-        </CardContent>
-        <CardFooter className="p-4 bg-white border-t">
-          <div className="flex w-full items-center space-x-2">
-            <Input
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              onKeyDown={handleKeyPress}
-              placeholder="Type your message here..."
-              className="flex-grow"
-            />
-            <Button
-              onClick={sendMessage}
-              disabled={loading || message.trim() === ""}
-              className="bg-blue-500 hover:bg-blue-600 text-white"
-            >
-              {loading ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                <Send className="h-4 w-4" />
-              )}
-              <span className="ml-2">Send</span>
-            </Button>
-          </div>
-        </CardFooter>
-      </Card>
+              ))}
+            </ScrollArea>
+          </CardContent>
+          <CardFooter className="p-4 bg-white border-t">
+            <div className="flex w-full items-center space-x-2">
+              <Input
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                onKeyDown={handleKeyPress}
+                placeholder="Type your message here..."
+                className="flex-grow"
+              />
+              <Button
+                onClick={sendMessage}
+                disabled={loading || message.trim() === ""}
+                className="bg-blue-500 hover:bg-blue-600 text-white"
+              >
+                {loading ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Send className="h-4 w-4" />
+                )}
+                <span className="ml-2">Send</span>
+              </Button>
+            </div>
+          </CardFooter>
+        </Card>
+      </div>
     </div>
   );
 }

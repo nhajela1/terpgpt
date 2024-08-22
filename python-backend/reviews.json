@@ -7,6 +7,72 @@
         "stars": 5
       },
       {
+        "professor": "Prof1",
+        "review": "Very knowledgeable and helpful. Always willing to go the extra mile to help students.",
+        "subject": "Math",
+        "stars": 5
+      },
+      {
+        "professor": "Prof1",
+        "review": "The lectures were a bit boring, but the material was interesting.",
+        "subject": "Math",
+        "stars": 4
+      },
+      {
+        "professor": "Prof1",
+        "review": "Great professor, always knows what to expect from students and provides valuable feedback.",
+        "subject": "Math",
+        "stars": 5
+      },
+      {
+        "professor": "Prof1",
+        "review": "Very knowledgeable and helpful. Always willing to go the extra mile to help students.",
+        "subject": "Math",
+        "stars": 5
+      },
+      {
+        "professor": "Prof1",
+        "review": "The lectures were a bit boring, but the material was interesting.",
+        "subject": "Physics",
+        "stars": 4
+      },
+      {
+        "professor": "Prof2",
+        "review": "Very engaging and knowledgeable. Made complex topics easy to understand.",
+        "subject": "Physics",
+        "stars": 4
+      },
+      {
+        "professor": "Prof3",
+        "review": "Cares about students and provides great feedback on assignments.",
+        "subject": "Chemistry",
+        "stars": 5
+      },
+      {
+        "professor": "Prof4",
+        "review": "The lectures were a bit dry, but the material was interesting.",
+        "subject": "History",
+        "stars": 3
+      },
+      {
+        "professor": "Prof5",
+        "review": "Excellent at explaining difficult concepts and always available for help.",
+        "subject": "Computer Science",
+        "stars": 5
+      },
+      {
+        "professor": "Prof6",
+        "review": "Had a lot of assignments, but they were helpful for learning.",
+        "subject": "Biology",
+        "stars": 4
+      },
+      {
+        "professor": "Prof1",
+        "review": "The lectures were a bit boring, but the material was interesting.",
+        "subject": "Math",
+        "stars": 4
+      },
+      {
         "professor": "Prof2",
         "review": "Very engaging and knowledgeable. Made complex topics easy to understand.",
         "subject": "Physics",

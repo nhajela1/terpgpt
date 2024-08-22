@@ -1,11 +1,13 @@
 "use client";
 import React, { useState, KeyboardEvent } from "react";
 import ReactMarkdown from "react-markdown";
+import Chat from "@/components/chat-page/chat";
+import ReviewCards from "@/components/chat-page/review-cards";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import { Send, Loader2 } from "lucide-react";
+import { Send, Loader2, Sidebar } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -17,14 +19,6 @@ import { Label } from "@/components/ui/label";
 import reviews from "../../../python-backend/reviews.json";
 
 export default function ChatPage() {
-  const [messages, setMessages] = useState([
-    {
-      role: "assistant",
-      content: `Hi! I'm Profsly. How can I help you today?`,
-    },
-  ]);
-  const [message, setMessage] = useState("");
-  const [loading, setLoading] = useState(false);
   const [selectedSubject, setSelectedSubject] = useState("");
   const [selectedProfessor, setSelectedProfessor] = useState("");
 
@@ -36,80 +30,11 @@ export default function ChatPage() {
     new Set(reviews.reviews.map((review) => review.professor))
   );
 
-  const sendMessage = async () => {
-    if (message.trim() === "") return;
-    setLoading(true);
-    setMessage("");
-
-    // Prepare the message with filter information, but don't show it in the UI
-    const fullMessage = message;
-    const messageWithFilters = `[Subject: ${selectedSubject}, Professor: ${selectedProfessor}] ${message}`;
-
-    setMessages((messages) => [
-      ...messages,
-      { role: "user", content: fullMessage },
-      { role: "assistant", content: "" },
-    ]);
-
-    try {
-      const response = await fetch("/api/chat", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify([
-          ...messages,
-          { role: "user", content: messageWithFilters },
-        ]),
-      });
-
-      if (!response.body) {
-        throw new Error("Response body is null");
-      }
-
-      const reader = response.body.getReader();
-      const decoder = new TextDecoder();
-      let result = "";
-
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        const text = decoder.decode(value, { stream: true });
-        result += text;
-        setMessages((messages) => {
-          let lastMessage = messages[messages.length - 1];
-          let otherMessages = messages.slice(0, messages.length - 1);
-          return [
-            ...otherMessages,
-            { ...lastMessage, content: lastMessage.content + text },
-          ];
-        });
-      }
-    } catch (error) {
-      console.error("Error:", error);
-      setMessages((messages) => [
-        ...messages,
-        {
-          role: "assistant",
-          content: "Sorry, an error occurred. Please try again.",
-        },
-      ]);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleKeyPress = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      sendMessage();
-    }
-  };
-
   return (
-    <div className="flex flex-col h-screen bg-gray-100 p-4">
+    <div className="h-screen bg-gray-100 p-4" id="chat-page">
+      {/* Header */}
       {/* Filter section */}
-      <Card className="mb-4">
+      <Card className="mb-4" id="filter-section" style={{ maxHeight: "calc(20vh)" }}>
         <CardContent className="p-4">
           <div className="flex flex-col space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4">
             <div className="flex-1">
@@ -156,80 +81,20 @@ export default function ChatPage() {
         </CardContent>
       </Card>
 
-      {/* Sidebar and chat sections */}
-      <div className="flex-grow flex sm:flex-row space-y-0 sm:space-y-0 sm:space-x-4">
-        {/* Sidebar */}
-        <Card className="w-full sm:w-1/3 h-full sm:h-auto mb-4 sm:mb-0 overflow-y-auto">
-          {/* Reviews for chosen subject and professor */}
-          <CardContent className="p-4">
-            <h2 className="text-xl font-semibold mb-4">Reviews for chosen subject and professor:</h2>
-            {reviews.reviews
-              .filter(
-                (review) =>
-                  (!selectedSubject || review.subject === selectedSubject) &&
-                  (!selectedProfessor || review.professor === selectedProfessor)
-              )
-              .map((review, index) => (
-                <Card key={index} className="mb-4">
-                  <CardContent>
-                    <h3 className="font-semibold text-lg mb-2">
-                      {review.subject} - {review.professor}
-                    </h3>
-                    <ReactMarkdown>{review.review}</ReactMarkdown>
-                  </CardContent>
-                </Card>
-              ))}
-          </CardContent>
-        </Card>
+      {/* Review cards and chat sections */}
+      <div className="flex" id="review-chat-section" style={{ maxHeight: "calc(80vh)" }}>
+        {/* Review Cards section */}
+        <ScrollArea>
+          <ReviewCards
+            review={reviews.reviews[0]}
+            reviews={reviews}
+            selectedSubject={selectedSubject}
+            selectedProfessor={selectedProfessor}
+          ></ReviewCards>
+        </ScrollArea>
 
         {/* Chat section */}
-        <Card className="flex-grow flex flex-col overflow-hidden">
-          <CardContent className="flex-grow p-4">
-            <ScrollArea className="h-full pr-4">
-              {messages.map((message, index) => (
-                <div
-                  key={index}
-                  className={`mb-4 ${
-                    message.role === "user" ? "text-right" : "text-left"
-                  }`}
-                >
-                  <div
-                    className={`inline-block p-3 rounded-lg ${
-                      message.role === "user"
-                        ? "bg-blue-500 text-white"
-                        : "bg-gray-200 text-gray-800"
-                    }`}
-                  >
-                    <ReactMarkdown>{message.content}</ReactMarkdown>
-                  </div>
-                </div>
-              ))}
-            </ScrollArea>
-          </CardContent>
-          <CardFooter className="p-4 bg-white border-t">
-            <div className="flex w-full items-center space-x-2">
-              <Input
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                onKeyDown={handleKeyPress}
-                placeholder="Type your message here..."
-                className="flex-grow"
-              />
-              <Button
-                onClick={sendMessage}
-                disabled={loading || message.trim() === ""}
-                className="bg-blue-500 hover:bg-blue-600 text-white"
-              >
-                {loading ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : (
-                  <Send className="h-4 w-4" />
-                )}
-                <span className="ml-2">Send</span>
-              </Button>
-            </div>
-          </CardFooter>
-        </Card>
+        <Chat></Chat>
       </div>
     </div>
   );

@@ -50,7 +50,7 @@ const ReviewCards: React.FC<ReviewCardsProps> = ({
           .map((review, index) => (
             <ScrollArea>
             <Card key={index} className="mb-4">
-              <CardContent>
+              <CardContent className="pt-3 pb-3">
                 <h3 className="font-semibold text-lg mb-2">
                   {review.subject} - {review.professor}
                 </h3>

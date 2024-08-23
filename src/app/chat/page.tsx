@@ -1,28 +1,35 @@
 "use client";
-import React, { useState, KeyboardEvent } from "react";
-import ReactMarkdown from "react-markdown";
+import React, { useState, useEffect } from "react";
 import Chat from "@/components/chat-page/chat";
 import ReviewCards from "@/components/chat-page/review-cards";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Card, CardContent } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import { Send, Loader2, Sidebar } from "lucide-react";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import reviews from "../../../python-backend/reviews.json";
 
 export default function ChatPage() {
   const [selectedSubject, setSelectedSubject] = useState("");
   const [selectedProfessor, setSelectedProfessor] = useState("");
+  const [isSmallScreen, setIsSmallScreen] = useState(false);
 
-  // Mock data for classes and professors
+  // Detect screen width and set the state
+  useEffect(() => {
+    const handleResize = () => {
+      setIsSmallScreen(window.innerWidth < 640); // Default small breakpoint in Tailwind CSS is 640px
+    };
+
+    // Initial check
+    handleResize();
+
+    // Add event listener for resize
+    window.addEventListener("resize", handleResize);
+
+    // Clean up the event listener
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   const subjects = Array.from(
     new Set(reviews.reviews.map((review) => review.subject))
   );
@@ -83,20 +90,41 @@ export default function ChatPage() {
 
       {/* Review cards and chat sections */}
       <div className="h-full flex" id="review-chat-section" style={{ maxHeight: "calc(80vh)" }}>
-        {/* Review Cards section */}
-        <div className="w-1/2 h-full overflow-y-auto">
-          <ScrollArea>
-            <ReviewCards
-              review={reviews.reviews[0]}
-              reviews={reviews}
-              selectedSubject={selectedSubject}
-              selectedProfessor={selectedProfessor}
-            ></ReviewCards>
-          </ScrollArea>
-        </div>
-
-        {/* Chat section */}
-        <Chat></Chat>
+        {isSmallScreen ? (
+          <Tabs defaultValue="chat" className="w-full flex flex-col y-overflow-auto">
+            <TabsList>
+              <TabsTrigger value="review">Reviews</TabsTrigger>
+              <TabsTrigger value="chat">Chat</TabsTrigger>
+            </TabsList>
+            <TabsContent value="review">
+              <ScrollArea>
+                <ReviewCards
+                  review={reviews.reviews[0]}
+                  reviews={reviews}
+                  selectedSubject={selectedSubject}
+                  selectedProfessor={selectedProfessor}
+                />
+              </ScrollArea>
+            </TabsContent>
+            <TabsContent value="chat" style={{ maxHeight: "calc(65vh)" }}>
+              <Chat />
+            </TabsContent>
+          </Tabs>
+        ) : (
+          <>
+            <div className="w-1/2 h-full overflow-y-auto">
+              <ScrollArea>
+                <ReviewCards
+                  review={reviews.reviews[0]}
+                  reviews={reviews}
+                  selectedSubject={selectedSubject}
+                  selectedProfessor={selectedProfessor}
+                />
+              </ScrollArea>
+            </div>
+            <Chat />
+          </>
+        )}
       </div>
     </div>
   );

@@ -99,7 +99,7 @@ export default function Chat() {
   }
 
   return (
-    <div className="h-full w-full flex bg-gray-100 pl-4">
+    <div className="h-full w-full flex bg-gray-100">
       <Card className="h-full w-full flex flex-col overflow-hidden">
         <ScrollArea className="flex-grow">
           <CardContent className="p-4">

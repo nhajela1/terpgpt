@@ -6,105 +6,153 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 
 // Define the Review type
-interface Review {
-  subject: string;
+export interface Review {
   professor: string;
+  expected_grade: string;
   review: string;
-  stars: number;
+  average_rating: number;
+  courses: string[];
+}
+
+interface GroupedReviews {
+  [professor: string]: {
+    reviews: Review[];
+    average_rating: number;
+    courses: string[];
+  };
 }
 
 // Define the Props type
 interface ReviewCardsProps {
-  review: Review;
-  reviews: { reviews: Review[] };
-  selectedSubject: string | null;
-  selectedProfessor: string | null;
+  reviews: Review[];
 }
 
-const ReviewCards: React.FC<ReviewCardsProps> = ({
-  review,
-  reviews,
-  selectedSubject,
-  selectedProfessor,
-}) => {
-  const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
-  const [shouldShowExpand, setShouldShowExpand] = useState<boolean[]>([]);
+const ReviewCards: React.FC<ReviewCardsProps> = ({ reviews }) => {
+  const [expandedIndex, setExpandedIndex] = useState<
+    Record<string, number | null>
+  >({});
+  const [shouldShowExpand, setShouldShowExpand] = useState<
+    Record<string, boolean[]>
+  >({});
 
-  const reviewRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const reviewRefs = useRef<Record<string, (HTMLDivElement | null)[]>>({});
 
-  const toggleExpand = (index: number) => {
-    setExpandedIndex(expandedIndex === index ? null : index);
+  const toggleExpand = (professor: string, index: number) => {
+    setExpandedIndex((prev) => ({
+      ...prev,
+      [professor]: prev[professor] === index ? null : index,
+    }));
   };
 
   useEffect(() => {
-    const newShouldShowExpand = reviews.reviews.map((_, index) => {
-      const element = reviewRefs.current[index];
-      if (element) {
-        const lineHeight = parseFloat(
-          getComputedStyle(element).lineHeight || "1.2"
-        );
-        const lines = element.scrollHeight / lineHeight;
-        return lines > 4;
-      }
-      return false;
+    const groupedReviews = groupReviews(reviews);
+    const newShouldShowExpand: Record<string, boolean[]> = {};
+
+    Object.keys(groupedReviews).forEach((professor) => {
+      newShouldShowExpand[professor] = groupedReviews[professor].reviews.map(
+        (_, index) => {
+          const element = reviewRefs.current[professor]?.[index];
+          if (element) {
+            const lineHeight = parseFloat(
+              getComputedStyle(element).lineHeight || "1.2"
+            );
+            const lines = element.scrollHeight / lineHeight;
+            return lines > 4;
+          }
+          return false;
+        }
+      );
     });
+
     setShouldShowExpand(newShouldShowExpand);
-  }, [reviews, selectedSubject, selectedProfessor]);
+  }, [reviews]);
+
+  if (reviews.length === 0) {
+    return null;
+  }
+
+  const groupedReviews = groupReviews(reviews);
 
   return (
     <Card className="sm:w-full sm:h-auto">
-      {/* Reviews for chosen subject and professor */}
       <CardContent className="p-4">
-        <h2 className="text-xl font-semibold mb-4">
-          Reviews for chosen subject and professor:
-        </h2>
-        <div>
-          {reviews.reviews
-            .filter(
-              (review) =>
-                (!selectedSubject || review.subject === selectedSubject) &&
-                (!selectedProfessor || review.professor === selectedProfessor)
-            )
-            .map((review, index) => (
-              <ScrollArea key={index}>
-                <Card className="mb-4">
-                  <CardContent className="pt-3 pb-3">
-                    <h3 className="font-semibold text-lg mb-2">
-                      {review.subject} - {review.professor} ({review.stars}/5
-                      stars)
-                    </h3>
-                    <div
-                      ref={(el) => {
-                        reviewRefs.current[index] = el;
-                      }}
-                      className={`relative ${
-                        expandedIndex === index || !shouldShowExpand[index]
-                          ? ""
-                          : "max-h-[2.8em] overflow-hidden"
-                      }`}
-                    >
-                      <ReactMarkdown>{review.review}</ReactMarkdown>
-                      {expandedIndex !== index && shouldShowExpand[index] && (
-                        <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-white to-transparent h-[1.5em]" />
-                      )}
-                    </div>
-                    {/* If shouldShowExpand[index] is true, the "&&" operator will render the button. */}
-                    {shouldShowExpand[index] && (
-                      <button
-                        onClick={() => toggleExpand(index)}
-                        className="text-blue-500 mt-2"
+        <h2 className="text-xl font-semibold mb-4">Reviews:</h2>
+        {Object.entries(groupedReviews).map(([professor, data]) => (
+          <div key={professor} className="mb-8">
+            <h3 className="text-lg font-semibold mb-2">{professor}</h3>
+            <div className="mb-4">
+              <p>
+                <strong>Courses:</strong> {data.courses.join(", ")}
+              </p>
+              <p>
+                <strong>Average Rating:</strong>{" "}
+                {data.average_rating.toFixed(1)}/5 stars
+              </p>
+            </div>
+            <div>
+              {data.reviews.map((review, index) => (
+                <ScrollArea key={index}>
+                  <Card className="mb-4">
+                    <CardContent className="pt-3 pb-3">
+                      <h4 className="font-semibold text-lg mb-2">
+                        Expected Grade: {review.expected_grade}
+                      </h4>
+                      <div
+                        ref={(el) => {
+                          if (!reviewRefs.current[professor]) {
+                            reviewRefs.current[professor] = [];
+                          }
+                          reviewRefs.current[professor][index] = el;
+                        }}
+                        className={`relative ${
+                          expandedIndex[professor] === index ||
+                          !shouldShowExpand[professor]?.[index]
+                            ? ""
+                            : "max-h-[2.8em] overflow-hidden"
+                        }`}
                       >
-                        {expandedIndex === index ? "See less" : "...see more"}
-                      </button>
-                    )}
-                  </CardContent>
-                </Card>
-              </ScrollArea>
-            ))}
-        </div>
+                        <ReactMarkdown>{review.review}</ReactMarkdown>
+                        {expandedIndex[professor] !== index &&
+                          shouldShowExpand[professor]?.[index] && (
+                            <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-white to-transparent h-[1.5em]" />
+                          )}
+                      </div>
+                      {shouldShowExpand[professor]?.[index] && (
+                        <button
+                          onClick={() => toggleExpand(professor, index)}
+                          className="text-blue-500 mt-2"
+                        >
+                          {expandedIndex[professor] === index
+                            ? "See less"
+                            : "...see more"}
+                        </button>
+                      )}
+                    </CardContent>
+                  </Card>
+                </ScrollArea>
+              ))}
+            </div>
+          </div>
+        ))}
       </CardContent>
     </Card>
   );
+};
+
+const groupReviews = (reviews: Review[]): GroupedReviews => {
+  return reviews.reduce((acc: GroupedReviews, review) => {
+    if (!acc[review.professor]) {
+      acc[review.professor] = {
+        reviews: [],
+        average_rating: 0,
+        courses: [],
+      };
+    }
+    acc[review.professor].reviews.push(review);
+    acc[review.professor].average_rating = review.average_rating;
+    acc[review.professor].courses = review.courses;
+    return acc;
+  }, {});
 };
 
 export default ReviewCards;

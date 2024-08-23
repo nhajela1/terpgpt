@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React, { useState, KeyboardEvent } from "react";
 import ReactMarkdown from "react-markdown";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
@@ -7,8 +7,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import reviews from "../../../python-backend/reviews.json";
+import { Review } from "./review-cards";
 
-export default function Chat() {
+interface ChatProps {
+  setReviews: React.Dispatch<React.SetStateAction<Review[]>>;
+}
+
+const Chat: React.FC<ChatProps> = ({ setReviews }) => {
   const [messages, setMessages] = useState([
     {
       role: "assistant",
@@ -17,25 +22,13 @@ export default function Chat() {
   ]);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
-  const [selectedSubject, setSelectedSubject] = useState("");
-  const [selectedProfessor, setSelectedProfessor] = useState("");
-
-  // Mock data for classes and professors
-  const subjects = Array.from(
-    new Set(reviews.reviews.map((review) => review.subject))
-  );
-  const professors = Array.from(
-    new Set(reviews.reviews.map((review) => review.professor))
-  );
 
   const sendMessage = async () => {
     if (message.trim() === "") return;
     setLoading(true);
     setMessage("");
 
-    // Prepare the message with filter information, but don't show it in the UI
     const fullMessage = message;
-    const messageWithFilters = `[Subject: ${selectedSubject}, Professor: ${selectedProfessor}] ${message}`;
 
     setMessages((messages) => [
       ...messages,
@@ -51,7 +44,7 @@ export default function Chat() {
         },
         body: JSON.stringify([
           ...messages,
-          { role: "user", content: messageWithFilters },
+          { role: "user", content: fullMessage },
         ]),
       });
 
@@ -62,20 +55,39 @@ export default function Chat() {
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
       let result = "";
+      let reviewsSet = false;
 
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
         const text = decoder.decode(value, { stream: true });
         result += text;
-        setMessages((messages) => {
-          let lastMessage = messages[messages.length - 1];
-          let otherMessages = messages.slice(0, messages.length - 1);
-          return [
-            ...otherMessages,
-            { ...lastMessage, content: lastMessage.content + text },
-          ];
-        });
+
+        if (!reviewsSet) {
+          try {
+            const data = JSON.parse(result);
+            if (data.reviews) {
+              const processedReviews = data.reviews.map((review: any) => ({
+                ...review,
+                courses: review.courses.split(", "),
+              }));
+              setReviews(processedReviews);
+              reviewsSet = true;
+              result = "";
+            }
+          } catch (e) {
+            // Not valid JSON yet, continue reading
+          }
+        } else {
+          setMessages((messages) => {
+            let lastMessage = messages[messages.length - 1];
+            let otherMessages = messages.slice(0, messages.length - 1);
+            return [
+              ...otherMessages,
+              { ...lastMessage, content: lastMessage.content + text },
+            ];
+          });
+        }
       }
     } catch (error) {
       console.error("Error:", error);
@@ -96,31 +108,31 @@ export default function Chat() {
       e.preventDefault();
       sendMessage();
     }
-  }
+  };
 
   return (
     <div className="h-full w-full flex bg-gray-100">
       <Card className="h-full w-full flex flex-col overflow-hidden">
         <ScrollArea className="flex-grow">
           <CardContent className="p-4">
-              {messages.map((message, index) => (
+            {messages.map((message, index) => (
+              <div
+                key={index}
+                className={`mb-4 ${
+                  message.role === "user" ? "text-right" : "text-left"
+                }`}
+              >
                 <div
-                  key={index}
-                  className={`mb-4 ${
-                    message.role === "user" ? "text-right" : "text-left"
+                  className={`inline-block p-3 rounded-lg ${
+                    message.role === "user"
+                      ? "bg-blue-500 text-white"
+                      : "bg-gray-200 text-gray-800"
                   }`}
                 >
-                  <div
-                    className={`inline-block p-3 rounded-lg ${
-                      message.role === "user"
-                        ? "bg-blue-500 text-white"
-                        : "bg-gray-200 text-gray-800"
-                    }`}
-                  >
-                    <ReactMarkdown>{message.content}</ReactMarkdown>
-                  </div>
+                  <ReactMarkdown>{message.content}</ReactMarkdown>
                 </div>
-              ))}
+              </div>
+            ))}
           </CardContent>
         </ScrollArea>
         <CardFooter className="flex p-4 bg-white border-t">
@@ -149,4 +161,6 @@ export default function Chat() {
       </Card>
     </div>
   );
-}
+};
+
+export default Chat;

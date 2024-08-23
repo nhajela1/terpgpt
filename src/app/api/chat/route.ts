@@ -3,12 +3,14 @@
 import { NextResponse } from 'next/server'
 import { Pinecone } from '@pinecone-database/pinecone'
 import OpenAI from 'openai'
+import { createClient } from '@supabase/supabase-js'
 
 const systemPrompt = `
 You are a rate my professor agent to help students find classes, that takes in user questions and answers them.
-For every user question, the top 3 professors that match the user question are returned.
+For every user question, the top 5 results that match the user question are returned.
 Use them to answer the question if needed.
 `
+
 
 export async function POST(req: Request) {
     // Initialize Pinecone and OpenAI
@@ -23,6 +25,9 @@ export async function POST(req: Request) {
     const index = pc.index('rag').namespace('ns1')
     const openai = new OpenAI()
 
+    // Initialize Supabase client
+    const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_ANON_KEY!)
+
     const text = data[data.length - 1].content
     // Process user query
     const embedding = await openai.embeddings.create({
@@ -31,31 +36,54 @@ export async function POST(req: Request) {
     encoding_format: 'float',
     })
 
-    // Query Pinecone for the top 3 professors that match the user query
+    // Query Pinecone for the top 5 results that match the user query
     const results = await index.query({
         topK: 5,
         includeMetadata: true,
         vector: embedding.data[0].embedding,
     })
 
-    // Format the results
-    let resultString = ''
-    results.matches.forEach((match) => {
-        resultString += `
-        Returned Results:
-        Professor: ${match.id}
-        Review: ${match.metadata?.stars}
-        Subject: ${match.metadata?.subject}
-        Stars: ${match.metadata?.stars}
-        \n\n`
-    })
+    // Format the results and fetch additional data from Supabase
+    let reviews = []
+    for (const match of results.matches) {
+        const { data: professorData, error: professorError } = await supabase
+            .from('professors')
+            .select('name, average_rating')
+            .eq('slug', match.metadata?.slug)
+            .single()
+
+        if (professorError) {
+            console.error('Error fetching professor data:', professorError)
+            continue
+        }
+
+        const { data: courseData, error: courseError } = await supabase
+            .from('professor-courses')
+            .select('course')
+            .eq('slug', match.metadata?.slug)
+
+        if (courseError) {
+            console.error('Error fetching course data:', courseError)
+            continue
+        }
+
+        const courses = courseData.map(course => course.course).join(', ')
+
+        reviews.push({
+            professor: professorData.name,
+            expected_grade: match.metadata?.expected_grade,
+            review: match.metadata?.review,
+            average_rating: professorData.average_rating,
+            courses: courses
+        })
+    }
 
     // Append the results to the last message
     const lastMessage = data[data.length - 1]
-    const lastMessageContent = lastMessage.content + resultString
+    const lastMessageContent = lastMessage.content + JSON.stringify(reviews)
     const lastDataWithoutLastMessage = data.slice(0, data.length - 1)
 
-    // Creare the chat completion
+    // Create the chat completion
     const completion = await openai.chat.completions.create({
         messages: [
           {role: 'system', content: systemPrompt},
@@ -70,6 +98,7 @@ export async function POST(req: Request) {
     const stream = new ReadableStream({
     async start(controller) {
         const encoder = new TextEncoder()
+        controller.enqueue(encoder.encode(JSON.stringify({reviews})))
         try {
         for await (const chunk of completion) {
             const content = chunk.choices[0]?.delta?.content

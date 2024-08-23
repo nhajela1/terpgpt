@@ -4,6 +4,7 @@ import React, { useEffect } from "react";
 import ReactMarkdown from "react-markdown";
 import { Card, CardContent } from "@/components/ui/card";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
+import { useQueryState } from "nuqs";
 
 // Define the Review type
 interface Review {
@@ -36,6 +37,10 @@ const ReviewCards: React.FC<ReviewCardsProps> = ({
     );
   }, [reviews, selectedSubject, selectedProfessor]);
 
+  const [course, _] = useQueryState('course');
+  const [professor, __] = useQueryState('professor');
+
+
   return (
     <Card className="sm:w-full sm:h-auto">
       {/* Reviews for chosen subject and professor */}
@@ -47,8 +52,8 @@ const ReviewCards: React.FC<ReviewCardsProps> = ({
           {reviews.reviews
             .filter(
               (review) =>
-                (!selectedSubject || review.subject === selectedSubject) &&
-                (!selectedProfessor || review.professor === selectedProfessor)
+                (!course || review.subject === course) &&
+                (!professor || review.professor === professor)
             )
             .map((review, index) => (
               <ScrollArea key={index}>

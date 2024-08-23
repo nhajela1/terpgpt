@@ -44,7 +44,7 @@ const ReviewCards: React.FC<ReviewCardsProps> = ({
           getComputedStyle(element).lineHeight || "1.2"
         );
         const lines = element.scrollHeight / lineHeight;
-        return lines > 2;
+        return lines > 4;
       }
       return false;
     });

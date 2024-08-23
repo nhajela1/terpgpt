@@ -8,6 +8,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import reviews from "../../../python-backend/reviews.json";
+import { flightRouterStateSchema } from "next/dist/server/app-render/types";
 
 export default function ChatPage() {
   const [selectedSubject, setSelectedSubject] = useState("");
@@ -96,17 +97,17 @@ export default function ChatPage() {
               <TabsTrigger value="review">Reviews</TabsTrigger>
               <TabsTrigger value="chat">Chat</TabsTrigger>
             </TabsList>
-            <TabsContent value="review">
-              <ScrollArea>
+            <ScrollArea>
+              <TabsContent value="review" style={{ minHeight: "calc(60vh)", maxHeight: "calc(70vh)", flex: 1 }}>
                 <ReviewCards
                   review={reviews.reviews[0]}
                   reviews={reviews}
                   selectedSubject={selectedSubject}
                   selectedProfessor={selectedProfessor}
                 />
-              </ScrollArea>
-            </TabsContent>
-            <TabsContent value="chat" style={{ maxHeight: "calc(65vh)" }}>
+              </TabsContent>
+            </ScrollArea>
+            <TabsContent value="chat" style={{ minHeight: "calc(60vh)", maxHeight: "calc(70vh)", flex: 1 }}>
               <Chat />
             </TabsContent>
           </Tabs>

@@ -36,7 +36,7 @@ const ReviewCards: React.FC<ReviewCardsProps> = ({
     setExpandedIndex(expandedIndex === index ? null : index);
   };
 
-  useEffect(() => {
+  const calculateShouldShowExpand = () => {
     const newShouldShowExpand = reviews.reviews.map((_, index) => {
       const element = reviewRefs.current[index];
       if (element) {
@@ -49,6 +49,24 @@ const ReviewCards: React.FC<ReviewCardsProps> = ({
       return false;
     });
     setShouldShowExpand(newShouldShowExpand);
+  };
+
+  useEffect(() => {
+    // Initial calculation of whether to show expand/collapse
+    calculateShouldShowExpand();
+
+    // Function to handle window resize
+    const handleResize = () => {
+      calculateShouldShowExpand();
+    };
+
+    // Add event listener for window resize
+    window.addEventListener("resize", handleResize);
+
+    // Cleanup function to remove event listener on component unmount
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
   }, [reviews, selectedSubject, selectedProfessor]);
 
   return (

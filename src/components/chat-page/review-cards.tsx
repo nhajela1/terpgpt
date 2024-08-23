@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import ReactMarkdown from "react-markdown";
 import { Card, CardContent } from "@/components/ui/card";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
@@ -27,13 +27,28 @@ const ReviewCards: React.FC<ReviewCardsProps> = ({
   selectedSubject,
   selectedProfessor,
 }) => {
+  const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
+  const [shouldShowExpand, setShouldShowExpand] = useState<boolean[]>([]);
+
+  const reviewRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+  const toggleExpand = (index: number) => {
+    setExpandedIndex(expandedIndex === index ? null : index);
+  };
+
   useEffect(() => {
-    const subjects = Array.from(
-      new Set(reviews.reviews.map((review) => review.subject))
-    );
-    const professors = Array.from(
-      new Set(reviews.reviews.map((review) => review.professor))
-    );
+    const newShouldShowExpand = reviews.reviews.map((_, index) => {
+      const element = reviewRefs.current[index];
+      if (element) {
+        const lineHeight = parseFloat(
+          getComputedStyle(element).lineHeight || "1.2"
+        );
+        const lines = element.scrollHeight / lineHeight;
+        return lines > 2;
+      }
+      return false;
+    });
+    setShouldShowExpand(newShouldShowExpand);
   }, [reviews, selectedSubject, selectedProfessor]);
 
   return (
@@ -58,7 +73,30 @@ const ReviewCards: React.FC<ReviewCardsProps> = ({
                       {review.subject} - {review.professor} ({review.stars}/5
                       stars)
                     </h3>
-                    <ReactMarkdown>{review.review}</ReactMarkdown>
+                    <div
+                      ref={(el) => {
+                        reviewRefs.current[index] = el;
+                      }}
+                      className={`relative ${
+                        expandedIndex === index || !shouldShowExpand[index]
+                          ? ""
+                          : "max-h-[2.8em] overflow-hidden"
+                      }`}
+                    >
+                      <ReactMarkdown>{review.review}</ReactMarkdown>
+                      {expandedIndex !== index && shouldShowExpand[index] && (
+                        <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-white to-transparent h-[1.5em]" />
+                      )}
+                    </div>
+                    {/* If shouldShowExpand[index] is true, the "&&" operator will render the button. */}
+                    {shouldShowExpand[index] && (
+                      <button
+                        onClick={() => toggleExpand(index)}
+                        className="text-blue-500 mt-2"
+                      >
+                        {expandedIndex === index ? "See less" : "...see more"}
+                      </button>
+                    )}
                   </CardContent>
                 </Card>
               </ScrollArea>

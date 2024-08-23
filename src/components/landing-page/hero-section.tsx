@@ -10,6 +10,13 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import {
+  ClerkProvider,
+  SignInButton,
+  SignedIn,
+  SignedOut,
+  UserButton
+} from '@clerk/nextjs'
 
 const HeroSection: React.FC = () => {
   const router = useRouter();
@@ -30,7 +37,7 @@ const HeroSection: React.FC = () => {
               size="lg"
               className="font-semibold text-indigo-900 bg-white hover:bg-purple-100 transition-colors"
               onClick={() => {
-                router.push("/chat");
+                router.push("/sign-up");
               }}
             >
               Get Started

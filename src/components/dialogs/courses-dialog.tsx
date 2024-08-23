@@ -2,6 +2,7 @@
 import { AlertDialog, AlertDialogCancel, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Input } from "@/components/ui/input";
 import { useQueryState } from 'nuqs'
+import { useState } from "react";
 
 interface CoursesDialogProps {
     children: React.ReactNode;
@@ -10,9 +11,15 @@ interface CoursesDialogProps {
 
 export default function CoursesDialog({ children, courses }: CoursesDialogProps) {
     const [course, setCourse] = useQueryState('course');
+    const [dialogOpen, setDialogOpen] = useState(false);
+
+    const selectCourse = (course: string) => {
+        setCourse(course);
+        return setDialogOpen(false)
+    }
     
     return (
-        <AlertDialog>
+        <AlertDialog open={dialogOpen} onOpenChange={setDialogOpen}>
             <AlertDialogTrigger asChild>
                 {children}
             </AlertDialogTrigger>
@@ -23,7 +30,7 @@ export default function CoursesDialog({ children, courses }: CoursesDialogProps)
                 <ul className="list-none p-0">
                     {
                         courses.map((course) => (
-                            <li onClick={() => setCourse(course)} className="py-2 px-3 cursor-pointer hover:bg-accent hover:text-accent-foreground" key={course}>
+                            <li onClick={() => selectCourse(course)} className="py-2 px-3 cursor-pointer hover:bg-accent hover:text-accent-foreground" key={course}>
                                 {course}
                             </li>
                         ))

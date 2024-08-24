@@ -20,23 +20,23 @@ import { cn } from "@/lib/utils";
 import { useAuth, useUser } from "@clerk/nextjs";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import Image from "next/image";
-import { isEligibleForUpgrade } from "@/utils/subscription";
+
 import { useQuery } from "@tanstack/react-query";
-import { readUser } from "@/database/users";
+// import { readUser } from "@/database/users";
 
 export default function DashboardHeader() {
   const pathname = usePathname();
-  const { user } = useUser();
+  // const { user } = useUser();
   const router = useRouter();
-  const { signOut } = useAuth();
+  // const { signOut } = useAuth();
   const { setTheme } = useTheme();
-  const { userId } = useAuth();
+  // const { userId } = useAuth();
 
-  const { data: userData } = useQuery({
-    queryKey: ["user", userId],
-    queryFn: () => readUser(userId!),
-    enabled: !!userId,
-  });
+  // const { data: userData } = useQuery({
+  //   queryKey: ["user", userId],
+  //   queryFn: () => readUser(userId!),
+  //   enabled: !!userId,
+  // });
 
   return (
     <header className="sticky z-50 top-0 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
@@ -44,7 +44,7 @@ export default function DashboardHeader() {
         <Image src="/logo.png" width={40} height={40} alt="KardsAI Logo" />
 
         <Link
-          href="/home"
+          href="/"
           className={cn(
             "transition-colors hover:text-foreground",
             pathname === "/home" ? "text-foreground" : "text-muted-foreground"
@@ -53,38 +53,17 @@ export default function DashboardHeader() {
           Dashboard
         </Link>
         <Link
-          href="/groups"
+          href="/chat"
           className={cn(
             "transition-colors hover:text-foreground",
-            pathname.includes("/groups")
+            pathname.includes("/chat")
               ? "text-foreground"
               : "text-muted-foreground"
           )}
         >
-          Groups
+          Chat
         </Link>
-        <Link
-          href="/flashcards"
-          className={cn(
-            "transition-colors hover:text-foreground",
-            pathname.includes("/flashcards")
-              ? "text-foreground"
-              : "text-muted-foreground"
-          )}
-        >
-          Flashcards
-        </Link>
-        <Link
-          href="/settings/general"
-          className={cn(
-            "transition-colors hover:text-foreground",
-            pathname.includes("/settings")
-              ? "text-foreground"
-              : "text-muted-foreground"
-          )}
-        >
-          Settings
-        </Link>
+        
       </nav>
       <Sheet>
         <SheetTrigger asChild>
@@ -100,7 +79,7 @@ export default function DashboardHeader() {
               className="flex items-center gap-2 text-lg font-semibold"
             >
               <Package2 className="h-6 w-6" />
-              <span className="sr-only">Kards AI</span>
+              <span className="sr-only">Profsly AI</span>
             </Link>
             <Link
               href="#"
@@ -156,38 +135,12 @@ export default function DashboardHeader() {
           </DropdownMenuContent>
         </DropdownMenu>
 
-        {isEligibleForUpgrade(userData?.subscriptionPlan) ? (
-          <Button
-            onClick={() => router.push("/upgrade")}
-            className="bg-gradient-to-r from-purple-600 to-blue-600 text-white"
-          >
-            ✨ Upgrade to Pro
-          </Button>
-        ) : null}
 
         <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            {!user ? (
-              <Button variant="secondary" size="icon" className="rounded-full">
-                <CircleUser className="h-5 w-5" />
-                <span className="sr-only">Toggle user menu</span>
-              </Button>
-            ) : (
-              <Avatar>
-                <AvatarImage src={user.imageUrl} />
-                <AvatarFallback>{user.firstName?.at(0)}</AvatarFallback>
-              </Avatar>
-            )}
-          </DropdownMenuTrigger>
+        
           <DropdownMenuContent align="end">
             {/* <DropdownMenuLabel>My Account</DropdownMenuLabel> */}
-            <DropdownMenuLabel>
-              {user
-                ? `Hi, ${user.firstName || user.username || "User"} ${
-                    user.lastName || ""
-                  }`.trim()
-                : "My Account"}
-            </DropdownMenuLabel>
+          
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={() => router.push("/settings/general")}>
               Settings

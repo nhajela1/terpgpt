@@ -54,7 +54,7 @@ export default function ChatPage() {
         <div
           className="h-full flex"
           id="review-chat-section"
-          style={{ maxHeight: "calc(100vh - 2rem)" }}
+          style={{ maxHeight: "calc(95vh)" }}
         >
           {isSmallScreen ? (
             <Tabs

@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React, { useState, KeyboardEvent } from "react";
 import ReactMarkdown from "react-markdown";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
@@ -20,7 +20,7 @@ export default function Chat() {
   const [loading, setLoading] = useState(false);
   const [selectedSubject, setSelectedSubject] = useState("");
   const [selectedProfessor, setSelectedProfessor] = useState("");
-  const { theme } = useTheme();
+  const { theme, systemTheme } = useTheme();
 
   // Mock data for classes and professors
   const subjects = Array.from(
@@ -98,35 +98,34 @@ export default function Chat() {
       e.preventDefault();
       sendMessage();
     }
-  }
+  };
 
   return (
     <div className="h-full w-full flex pl-4">
       <Card className="h-full w-full flex flex-col overflow-hidden">
         <ScrollArea className="flex-grow">
           <CardContent className="p-4">
-              {messages.map((message, index) => (
+            {messages.map((message, index) => (
+              <div
+                key={index}
+                className={`mb-4 ${
+                  message.role === "user" ? "text-right" : "text-left"
+                }`}
+              >
                 <div
-                  key={index}
-                  className={`mb-4 ${
-                    message.role === "user" ? "text-right" : "text-left"
-                  }`}
-                >
-                  <div
-                    className={`inline-block p-3 rounded-lg ${
-                      message.role === "user"
-                      ? theme === "dark"
-                        ? "bg-blue-500 text-white"
-                        : "bg-blue-500 text-white"
-                      : theme === "dark"
+                  className={`inline-block p-3 rounded-lg ${
+                    message.role === "user"
+                      ? "bg-blue-500 text-white"
+                      : theme === "dark" ||
+                        (theme === "system" && systemTheme === "dark")
                       ? "bg-gray-800 text-white"
                       : "bg-gray-200 text-blue-900"
-                    }`}
-                  >
-                    <ReactMarkdown>{message.content}</ReactMarkdown>
-                  </div>
+                  }`}
+                >
+                  <ReactMarkdown>{message.content}</ReactMarkdown>
                 </div>
-              ))}
+              </div>
+            ))}
           </CardContent>
         </ScrollArea>
         <CardFooter className="flex p-4 border-t">

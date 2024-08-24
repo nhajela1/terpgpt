@@ -44,27 +44,41 @@ const ReviewCards: React.FC<ReviewCardsProps> = ({ reviews }) => {
     }));
   };
 
-  useEffect(() => {
-    const groupedReviews = groupReviews(reviews);
-    const newShouldShowExpand: Record<string, boolean[]> = {};
-
-    Object.keys(groupedReviews).forEach((professor) => {
-      newShouldShowExpand[professor] = groupedReviews[professor].reviews.map(
-        (_, index) => {
-          const element = reviewRefs.current[professor]?.[index];
-          if (element) {
+  const calculateShouldShowExpand = () => {
+    const newShouldShowExpand = Object.fromEntries(
+      Object.entries(reviewRefs.current).map(([professor, refs]) => [
+        professor,
+        refs.map((ref) => {
+          if (ref) {
             const lineHeight = parseFloat(
-              getComputedStyle(element).lineHeight || "1.2"
+              getComputedStyle(ref).lineHeight || "1.2"
             );
-            const lines = element.scrollHeight / lineHeight;
+            const lines = ref.scrollHeight / lineHeight;
             return lines > 4;
           }
           return false;
-        }
-      );
-    });
-
+        }),
+      ])
+    );
     setShouldShowExpand(newShouldShowExpand);
+  }
+
+  useEffect(() => {
+    // Initial calculation of whether to show expand/collapse
+    calculateShouldShowExpand();
+
+    // Function to handle window resize
+    const handleResize = () => {
+      calculateShouldShowExpand();
+    };
+
+    // Add event listener for window resize
+    window.addEventListener("resize", handleResize);
+
+    // Cleanup function to remove event listener on component unmount
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
   }, [reviews]);
 
   if (reviews.length === 0) {

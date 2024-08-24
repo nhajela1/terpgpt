@@ -4,6 +4,7 @@ import React, { useEffect, useState, useRef } from "react";
 import ReactMarkdown from "react-markdown";
 import { Card, CardContent } from "@/components/ui/card";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
+import ReactStars from 'react-stars';
 
 // Define the Review type
 export interface Review {
@@ -98,9 +99,16 @@ const ReviewCards: React.FC<ReviewCardsProps> = ({ reviews }) => {
               <p>
                 <strong>Courses:</strong> {data.courses.join(", ")}
               </p>
-              <p>
+              <p style={{ display: "inline" }}>
                 <strong>Average Rating:</strong>{" "}
-                {data.average_rating.toFixed(1)}/5 stars
+                {data.average_rating.toFixed(1)}/5
+                <ReactStars
+                  count={5}
+                  value={data.average_rating}
+                  size={18}
+                  color2={"#ffd700"}
+                  edit={false}
+                />
               </p>
             </div>
             <div>

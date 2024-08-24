@@ -56,12 +56,12 @@ export default function ChatPage() {
               <TabsTrigger value="review">Reviews</TabsTrigger>
               <TabsTrigger value="chat">Chat</TabsTrigger>
             </TabsList>
-            <TabsContent value="review">
-              <ScrollArea>
+            <ScrollArea>
+              <TabsContent value="review" style={{ minHeight: "calc(80vh)", maxHeight: "calc(90vh)", flex: 1 }}>
                 <ReviewCards reviews={reviews} />
-              </ScrollArea>
-            </TabsContent>
-            <TabsContent value="chat" style={{ maxHeight: "calc(65vh)" }}>
+              </TabsContent>
+            </ScrollArea>
+            <TabsContent value="chat" style={{ minHeight: "calc(80vh)", maxHeight: "calc(90vh)", flex: 1 }}>
               <Chat setReviews={setReviews} />
             </TabsContent>
           </Tabs>

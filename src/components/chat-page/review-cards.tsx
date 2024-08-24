@@ -57,7 +57,7 @@ const ReviewCards: React.FC<ReviewCardsProps> = ({ reviews }) => {
               getComputedStyle(ref).lineHeight || "1.2"
             );
             const lines = ref.scrollHeight / lineHeight;
-            return lines > 4;
+            return lines > 5;
           }
           return false;
         }),
@@ -136,7 +136,7 @@ const ReviewCards: React.FC<ReviewCardsProps> = ({ reviews }) => {
                           expandedIndex[professor] === index ||
                           !shouldShowExpand[professor]?.[index]
                             ? ""
-                            : "max-h-[2.8em] overflow-hidden"
+                            : "max-h-[5.6em] overflow-hidden"
                         }`}
                       >
                         <ReactMarkdown>{review.review}</ReactMarkdown>

@@ -4,6 +4,7 @@ import React, { useEffect, useState, useRef } from "react";
 import ReactMarkdown from "react-markdown";
 import { Card, CardContent } from "@/components/ui/card";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
+import { useTheme } from "next-themes";
 
 // Define the Review type
 export interface Review {
@@ -28,6 +29,7 @@ interface ReviewCardsProps {
 }
 
 const ReviewCards: React.FC<ReviewCardsProps> = ({ reviews }) => {
+  const { theme, systemTheme } = useTheme();
   const [expandedIndex, setExpandedIndex] = useState<
     Record<string, number | null>
   >({});
@@ -142,7 +144,14 @@ const ReviewCards: React.FC<ReviewCardsProps> = ({ reviews }) => {
                         <ReactMarkdown>{review.review}</ReactMarkdown>
                         {expandedIndex[professor] !== index &&
                           shouldShowExpand[professor]?.[index] && (
-                            <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-white to-transparent h-[1.5em]" />
+                            <div
+                              className={`absolute bottom-0 left-0 w-full bg-gradient-to-t ${
+                                theme === "dark" ||
+                                (theme === "system" && systemTheme === "dark")
+                                  ? "from-gray-900 to-transparent"
+                                  : "from-white to-transparent"
+                              } h-[1.5em]`}
+                            />
                           )}
                       </div>
                       {shouldShowExpand[professor]?.[index] && (

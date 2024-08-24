@@ -7,17 +7,31 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import reviews from "../../../python-backend/reviews.json";
+import { useTheme } from "next-themes";
 import { Review } from "./review-cards";
 
 interface ChatProps {
   setReviews: React.Dispatch<React.SetStateAction<Review[]>>;
   messages: { role: string; content: string }[];
-  setMessages: React.Dispatch<React.SetStateAction<{ role: string; content: string }[]>>;
+  setMessages: React.Dispatch<
+    React.SetStateAction<{ role: string; content: string }[]>
+  >;
 }
 
 const Chat: React.FC<ChatProps> = ({ setReviews, messages, setMessages }) => {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [selectedSubject, setSelectedSubject] = useState("");
+  const [selectedProfessor, setSelectedProfessor] = useState("");
+  const { theme, systemTheme } = useTheme();
+
+  // Mock data for classes and professors
+  const subjects = Array.from(
+    new Set(reviews.reviews.map((review) => review.subject))
+  );
+  const professors = Array.from(
+    new Set(reviews.reviews.map((review) => review.professor))
+  );
 
   const sendMessage = async () => {
     if (message.trim() === "") return;
@@ -107,7 +121,7 @@ const Chat: React.FC<ChatProps> = ({ setReviews, messages, setMessages }) => {
   };
 
   return (
-    <div className="h-full w-full flex bg-gray-100">
+    <div className="h-full w-full flex pl-4">
       <Card className="h-full w-full flex flex-col overflow-hidden">
         <ScrollArea className="flex-grow">
           <CardContent className="p-4">
@@ -122,7 +136,10 @@ const Chat: React.FC<ChatProps> = ({ setReviews, messages, setMessages }) => {
                   className={`inline-block p-3 rounded-lg ${
                     message.role === "user"
                       ? "bg-blue-500 text-white"
-                      : "bg-gray-200 text-gray-800"
+                      : theme === "dark" ||
+                        (theme === "system" && systemTheme === "dark")
+                      ? "bg-gray-800 text-white"
+                      : "bg-gray-200 text-blue-900"
                   }`}
                 >
                   <ReactMarkdown>{message.content}</ReactMarkdown>
@@ -131,7 +148,7 @@ const Chat: React.FC<ChatProps> = ({ setReviews, messages, setMessages }) => {
             ))}
           </CardContent>
         </ScrollArea>
-        <CardFooter className="flex p-4 bg-white border-t">
+        <CardFooter className="flex p-4 border-t">
           <div className="flex w-full items-center space-x-2">
             <Input
               value={message}

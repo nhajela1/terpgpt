@@ -19,6 +19,7 @@ import { Review } from "@/components/chat-page/review-cards";
 interface ChatProps {
   setReviews: React.Dispatch<React.SetStateAction<Review[]>>;
 }
+import { ThemeToggle } from "@/components/darktheme/darktheme";
 
 export default function ChatPage() {
   const [reviews, setReviews] = useState<Review[]>([]);
@@ -47,41 +48,66 @@ export default function ChatPage() {
   }, []);
 
   return (
-    <div className="h-screen bg-gray-100 p-4" id="chat-page">
-      <div
-        className="h-full flex"
-        id="review-chat-section"
-        style={{ maxHeight: "calc(100vh - 2rem)" }}
-      >
-        {isSmallScreen ? (
-          <Tabs
-            defaultValue="chat"
-            className="w-full flex flex-col y-overflow-auto"
-          >
-            <TabsList>
-              <TabsTrigger value="review">Reviews</TabsTrigger>
-              <TabsTrigger value="chat">Chat</TabsTrigger>
-            </TabsList>
-            <ScrollArea>
-              <TabsContent value="review" style={{ minHeight: "calc(80vh)", maxHeight: "calc(90vh)", flex: 1 }}>
-                <ReviewCards reviews={reviews} />
-              </TabsContent>
-            </ScrollArea>
-            <TabsContent value="chat" style={{ minHeight: "calc(80vh)", maxHeight: "calc(90vh)", flex: 1 }}>
-              <Chat setReviews={setReviews} messages={messages} setMessages={setMessages} />
-            </TabsContent>
-          </Tabs>
-        ) : (
-          <>
-            <div className="w-1/2 h-full overflow-y-auto">
+    <>
+      <ThemeToggle />
+      <div className="h-screen p-4" id="chat-page">
+        <div
+          className="h-full flex"
+          id="review-chat-section"
+          style={{ maxHeight: "calc(100vh - 2rem)" }}
+        >
+          {isSmallScreen ? (
+            <Tabs
+              defaultValue="chat"
+              className="w-full flex flex-col y-overflow-auto"
+            >
+              <TabsList>
+                <TabsTrigger value="review">Reviews</TabsTrigger>
+                <TabsTrigger value="chat">Chat</TabsTrigger>
+              </TabsList>
               <ScrollArea>
-                <ReviewCards reviews={reviews} />
+                <TabsContent
+                  value="review"
+                  style={{
+                    minHeight: "calc(80vh)",
+                    maxHeight: "calc(90vh)",
+                    flex: 1,
+                  }}
+                >
+                  <ReviewCards reviews={reviews} />
+                </TabsContent>
               </ScrollArea>
-            </div>
-            <Chat setReviews={setReviews} messages={messages} setMessages={setMessages} />
-          </>
-        )}
+              <TabsContent
+                value="chat"
+                style={{
+                  minHeight: "calc(80vh)",
+                  maxHeight: "calc(90vh)",
+                  flex: 1,
+                }}
+              >
+                <Chat
+                  setReviews={setReviews}
+                  messages={messages}
+                  setMessages={setMessages}
+                />
+              </TabsContent>
+            </Tabs>
+          ) : (
+            <>
+              <div className="w-1/2 h-full overflow-y-auto">
+                <ScrollArea>
+                  <ReviewCards reviews={reviews} />
+                </ScrollArea>
+              </div>
+              <Chat
+                setReviews={setReviews}
+                messages={messages}
+                setMessages={setMessages}
+              />
+            </>
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 }

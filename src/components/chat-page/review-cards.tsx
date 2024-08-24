@@ -5,6 +5,7 @@ import ReactMarkdown from "react-markdown";
 import { Card, CardContent } from "@/components/ui/card";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { useTheme } from "next-themes";
+import ReactStars from "react-stars";
 
 // Define the Review type
 export interface Review {
@@ -114,10 +115,22 @@ const ReviewCards: React.FC<ReviewCardsProps> = ({ reviews }) => {
               <p>
                 <strong>Courses:</strong> {data.courses.join(", ")}
               </p>
-              <p>
-                <strong>Average Rating:</strong>{" "}
-                {data.average_rating.toFixed(1)}/5 stars
-              </p>
+              <div className="flex items-center">
+                <p className="flex items-center">
+                  <strong>Average Rating:</strong>{" "}
+                  <ReactStars
+                    count={5}
+                    value={data.average_rating}
+                    size={18}
+                    color2={"#ffd700"}
+                    edit={false}
+                    className="pl-1" // Added padding to the left of the stars
+                  />
+                  <span className="ml-1">
+                    ({data.average_rating.toFixed(2)})
+                  </span>
+                </p>
+              </div>
             </div>
             <div>
               {data.reviews.map((review, index) => (

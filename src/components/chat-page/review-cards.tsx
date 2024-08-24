@@ -37,6 +37,9 @@ const ReviewCards: React.FC<ReviewCardsProps> = ({ reviews }) => {
 
   const reviewRefs = useRef<Record<string, (HTMLDivElement | null)[]>>({});
 
+  // ResizeObserver to check if the content height has changed
+  const resizeObserver = useRef<ResizeObserver | null>(null);
+
   const toggleExpand = (professor: string, index: number) => {
     setExpandedIndex((prev) => ({
       ...prev,
@@ -61,23 +64,34 @@ const ReviewCards: React.FC<ReviewCardsProps> = ({ reviews }) => {
       ])
     );
     setShouldShowExpand(newShouldShowExpand);
-  }
+  };
 
   useEffect(() => {
-    // Initial calculation of whether to show expand/collapse
-    calculateShouldShowExpand();
+    if (!resizeObserver.current) {
+      resizeObserver.current = new ResizeObserver(calculateShouldShowExpand);
+    }
 
-    // Function to handle window resize
-    const handleResize = () => {
-      calculateShouldShowExpand();
-    };
+    // Attach the observer to each review element
+    Object.values(reviewRefs.current).forEach((refs) =>
+      refs.forEach((ref) => {
+        if (ref) {
+          resizeObserver.current?.observe(ref);
+        }
+      })
+    );
 
-    // Add event listener for window resize
-    window.addEventListener("resize", handleResize);
-
-    // Cleanup function to remove event listener on component unmount
+    // Cleanup function to remove ResizeObserver
     return () => {
-      window.removeEventListener("resize", handleResize);
+      if (resizeObserver.current) {
+        Object.values(reviewRefs.current).forEach((refs) =>
+          refs.forEach((ref) => {
+            if (ref) {
+              resizeObserver.current?.unobserve(ref);
+            }
+          })
+        );
+        resizeObserver.current.disconnect();
+      }
     };
   }, [reviews]);
 

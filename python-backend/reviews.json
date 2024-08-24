@@ -2,7 +2,7 @@
     "reviews": [
       {
         "professor": "Prof1",
-        "review": "Great professor, always knows what to expect from students and provides valuable feedback.",
+        "review": "Great professor, always knows what to expect from students and provides valuable feedback. This is a longer review in order to test whether the expand/collapse functionality works as expected.",
         "subject": "Math",
         "stars": 5
       },

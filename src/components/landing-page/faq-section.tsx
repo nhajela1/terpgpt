@@ -9,29 +9,29 @@ import {
 const FAQSection: React.FC = () => {
   const faqs = [
     {
-      question: "What is Profsly AI?",
+      question: "What is TerpGPT?",
       answer:
-        "Profsly AI is an intelligent assistant trained on professor and course information from universities. It can answer a wide range of questions about courses, professors, and academic programs.",
+        "TerpGPT is an intelligent assistant trained on professor and course information from universities. It can answer a wide range of questions about courses, professors, and academic programs.",
     },
     {
-      question: "How accurate is the information provided by Profsly AI?",
+      question: "How accurate is the information provided by TerpGPT?",
       answer:
-        "Profsly AI is trained on up-to-date information from university databases. However, we always recommend verifying critical information with official university sources.",
+        "TerpGPT is trained on up-to-date information from university databases. However, we always recommend verifying critical information with official university sources.",
     },
     {
-      question: "Can Profsly AI help with course selection?",
+      question: "Can TerpGPT help with course selection?",
       answer:
-        "Yes! Profsly AI can provide detailed information about courses, including prerequisites, course content, and professor teaching styles to help you make informed decisions about your course selection.",
+        "Yes! TerpGPT can provide detailed information about courses, including prerequisites, course content, and professor teaching styles to help you make informed decisions about your course selection.",
     },
     {
-      question: "Is Profsly AI available 24/7?",
+      question: "Is TerpGPT available 24/7?",
       answer:
-        "Absolutely! You can access Profsly AI anytime, day or night, to get answers to your questions about university courses and professors.",
+        "Absolutely! You can access TerpGPT anytime, day or night, to get answers to your questions about university courses and professors.",
     },
     {
-      question: "How does Profsly AI handle privacy and data protection?",
+      question: "How does TerpGPT handle privacy and data protection?",
       answer:
-        "We take privacy very seriously. Profsly AI does not store personal conversations or queries. All interactions are anonymous and we adhere to strict data protection guidelines.",
+        "We take privacy very seriously. TerpGPT does not store personal conversations or queries. All interactions are anonymous and we adhere to strict data protection guidelines.",
     },
   ];
 

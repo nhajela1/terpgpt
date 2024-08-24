@@ -23,6 +23,12 @@ interface ChatProps {
 export default function ChatPage() {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [isSmallScreen, setIsSmallScreen] = useState(false);
+  const [messages, setMessages] = useState([
+    {
+      role: "assistant",
+      content: `Hi! I'm Profsly. How can I help you today?`,
+    },
+  ]);
 
   // Detect screen width and set the state
   useEffect(() => {
@@ -56,13 +62,13 @@ export default function ChatPage() {
               <TabsTrigger value="review">Reviews</TabsTrigger>
               <TabsTrigger value="chat">Chat</TabsTrigger>
             </TabsList>
-            <TabsContent value="review">
-              <ScrollArea>
+            <ScrollArea>
+              <TabsContent value="review" style={{ minHeight: "calc(80vh)", maxHeight: "calc(90vh)", flex: 1 }}>
                 <ReviewCards reviews={reviews} />
-              </ScrollArea>
-            </TabsContent>
-            <TabsContent value="chat" style={{ maxHeight: "calc(65vh)" }}>
-              <Chat setReviews={setReviews} />
+              </TabsContent>
+            </ScrollArea>
+            <TabsContent value="chat" style={{ minHeight: "calc(80vh)", maxHeight: "calc(90vh)", flex: 1 }}>
+              <Chat setReviews={setReviews} messages={messages} setMessages={setMessages} />
             </TabsContent>
           </Tabs>
         ) : (
@@ -72,7 +78,7 @@ export default function ChatPage() {
                 <ReviewCards reviews={reviews} />
               </ScrollArea>
             </div>
-            <Chat setReviews={setReviews} />
+            <Chat setReviews={setReviews} messages={messages} setMessages={setMessages} />
           </>
         )}
       </div>

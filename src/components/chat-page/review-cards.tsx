@@ -37,6 +37,9 @@ const ReviewCards: React.FC<ReviewCardsProps> = ({ reviews }) => {
 
   const reviewRefs = useRef<Record<string, (HTMLDivElement | null)[]>>({});
 
+  // ResizeObserver to check if the content height has changed
+  const resizeObserver = useRef<ResizeObserver | null>(null);
+
   const toggleExpand = (professor: string, index: number) => {
     setExpandedIndex((prev) => ({
       ...prev,
@@ -44,27 +47,52 @@ const ReviewCards: React.FC<ReviewCardsProps> = ({ reviews }) => {
     }));
   };
 
-  useEffect(() => {
-    const groupedReviews = groupReviews(reviews);
-    const newShouldShowExpand: Record<string, boolean[]> = {};
-
-    Object.keys(groupedReviews).forEach((professor) => {
-      newShouldShowExpand[professor] = groupedReviews[professor].reviews.map(
-        (_, index) => {
-          const element = reviewRefs.current[professor]?.[index];
-          if (element) {
+  const calculateShouldShowExpand = () => {
+    const newShouldShowExpand = Object.fromEntries(
+      Object.entries(reviewRefs.current).map(([professor, refs]) => [
+        professor,
+        refs.map((ref) => {
+          if (ref) {
             const lineHeight = parseFloat(
-              getComputedStyle(element).lineHeight || "1.2"
+              getComputedStyle(ref).lineHeight || "1.2"
             );
-            const lines = element.scrollHeight / lineHeight;
+            const lines = ref.scrollHeight / lineHeight;
             return lines > 4;
           }
           return false;
-        }
-      );
-    });
-
+        }),
+      ])
+    );
     setShouldShowExpand(newShouldShowExpand);
+  };
+
+  useEffect(() => {
+    if (!resizeObserver.current) {
+      resizeObserver.current = new ResizeObserver(calculateShouldShowExpand);
+    }
+
+    // Attach the observer to each review element
+    Object.values(reviewRefs.current).forEach((refs) =>
+      refs.forEach((ref) => {
+        if (ref) {
+          resizeObserver.current?.observe(ref);
+        }
+      })
+    );
+
+    // Cleanup function to remove ResizeObserver
+    return () => {
+      if (resizeObserver.current) {
+        Object.values(reviewRefs.current).forEach((refs) =>
+          refs.forEach((ref) => {
+            if (ref) {
+              resizeObserver.current?.unobserve(ref);
+            }
+          })
+        );
+        resizeObserver.current.disconnect();
+      }
+    };
   }, [reviews]);
 
   if (reviews.length === 0) {

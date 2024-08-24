@@ -11,15 +11,11 @@ import { Review } from "./review-cards";
 
 interface ChatProps {
   setReviews: React.Dispatch<React.SetStateAction<Review[]>>;
+  messages: { role: string; content: string }[];
+  setMessages: React.Dispatch<React.SetStateAction<{ role: string; content: string }[]>>;
 }
 
-const Chat: React.FC<ChatProps> = ({ setReviews }) => {
-  const [messages, setMessages] = useState([
-    {
-      role: "assistant",
-      content: `Hi! I'm Profsly. How can I help you today?`,
-    },
-  ]);
+const Chat: React.FC<ChatProps> = ({ setReviews, messages, setMessages }) => {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
 

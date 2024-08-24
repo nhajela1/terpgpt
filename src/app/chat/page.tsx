@@ -27,7 +27,7 @@ export default function ChatPage() {
   const [messages, setMessages] = useState([
     {
       role: "assistant",
-      content: `Hi! I'm Profsly. How can I help you today?`,
+      content: `Hi! I'm TerpGPT. How can I help you today?`,
     },
   ]);
 

@@ -7,9 +7,9 @@ import { ThemeProvider } from "@/components/theme-provider/theme-provider";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Profsly AI",
+  title: "TerpGPT",
   description:
-    "Profsly AI is a chatbot that helps you to answer UMD-specific professors, courses and reviews.",
+    "TerpGPT is a chatbot that helps you to answer UMD-specific professors, courses and reviews.",
 };
 
 export default function RootLayout({

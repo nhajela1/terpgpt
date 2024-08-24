@@ -19,7 +19,7 @@ const HeroSection: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <div>
             <h1 className="text-5xl sm:text-6xl font-bold mb-8 leading-tight">
-              Welcome to Profsly AI
+              Welcome to TerpGPT
             </h1>
             <p className="text-xl mb-10 text-purple-100">
               Your intelligent AI assistant for all university course

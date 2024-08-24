@@ -42,7 +42,7 @@ const ReviewCards: React.FC<ReviewCardsProps> = ({
 
 
   return (
-    <Card className="sm:w-full sm:h-auto">
+    <Card className="sm:w-full sm:max-h-full sm:min-h-full">
       {/* Reviews for chosen subject and professor */}
       <CardContent className="p-4">
         <h2 className="text-xl font-semibold mb-4">

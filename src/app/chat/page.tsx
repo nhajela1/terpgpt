@@ -19,6 +19,13 @@ import reviews from "../../../python-backend/reviews.json";
 import FilterBreadcrumbs from "./breadcrumbs";
 import { useSearchParams } from "next/navigation";
 
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from "@/components/ui/resizable"
+
+
 export default function ChatPage() {
 
   const subjects = Array.from(
@@ -28,10 +35,13 @@ export default function ChatPage() {
       new Set(reviews.reviews.map((review) => review.professor))
   );
 
+  const panelDefaultSize = 20;
+  const panelMaxSize = 25;
+
 
 
   return (
-    <div className="h-screen bg-gray-100 p-4" id="chat-page">
+    <div className="h-screen bg-gray-100" id="chat-page">
       {/* Header */}
       {/* Filter section */}
 
@@ -88,23 +98,37 @@ export default function ChatPage() {
       }
 
       {/* Review cards and chat sections */}
-      <div className="h-[100dvh] grid grid-cols-4" id="review-chat-section">
+      <ResizablePanelGroup 
+        direction="horizontal"
+        className="h-[100dvh] p-3" 
+        id="review-chat-section"
+      >
         {/* Review Cards section */}
-        <ScrollArea>
-          <ReviewCards
-            review={reviews.reviews[0]}
-            reviews={reviews}
-            selectedSubject={""}
-            selectedProfessor={""}
-          ></ReviewCards>
-        </ScrollArea>
+        <ResizablePanel maxSize={panelMaxSize} minSize={panelDefaultSize} defaultValue={panelDefaultSize}>
+          <ScrollArea>
+            <ReviewCards
+              review={reviews.reviews[0]}
+              reviews={reviews}
+              selectedSubject={""}
+              selectedProfessor={""}
+            />
+          </ScrollArea>
+        </ResizablePanel>
+        <ResizableHandle withHandle/>
+
 
         {/* Chat section */}
-        <div className="md:col-span-3">
-          <FilterBreadcrumbs/>
-          <Chat/>
-        </div>
-      </div>
+        <ResizablePanel 
+          minSize={100 - panelMaxSize} 
+          maxSize={100 - panelDefaultSize} 
+          defaultValue={100 - panelDefaultSize}
+        >
+          <div className="h-full ml-3">
+            <Chat/>
+          </div>
+        </ResizablePanel>
+
+      </ResizablePanelGroup>
     </div>
   );
 }

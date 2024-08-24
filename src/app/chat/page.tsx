@@ -34,7 +34,7 @@ export default function ChatPage() {
   return (
     <> 
     <ThemeToggle />
-    <div className="h-screen bg-gray-100 p-4" id="chat-page">
+    <div className="h-screen p-4" id="chat-page">
       {/* Header */}
       {/* Filter section */}
       <Card className="mb-4" id="filter-section" style={{ maxHeight: "calc(20vh)" }}>

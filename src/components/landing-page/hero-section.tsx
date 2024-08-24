@@ -15,27 +15,36 @@ const HeroSection: React.FC = () => {
   const router = useRouter();
   return (
     <div className="bg-gradient-to-br from-purple-900 via-indigo-800 to-purple-800 text-white">
-      <div className="container mx-auto px-4 py-20 sm:py-28">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-          <div>
-            <h1 className="text-5xl sm:text-6xl font-bold mb-8 leading-tight">
-              Welcome to TerpGPT
-            </h1>
-            <p className="text-xl mb-10 text-purple-100">
-              Your intelligent AI assistant for all university course
-              information. Ask any question, get instant answers!
-            </p>
-            <Button
-              variant="secondary"
-              size="lg"
-              className="font-semibold text-indigo-900 bg-white hover:bg-purple-100 transition-colors"
-              onClick={() => {
-                router.push("/chat");
-              }}
-            >
-              Get Started
-              <ArrowRight className="ml-2" size={20} />
-            </Button>
+      <div className="container mx-auto px-4 sm:py-20">
+        <div className="grid grid-rows-1 lg:grid-rows-2 gap-8 items-center justify-center">
+          <div className="flex">
+            <span>
+              <img
+                src="/terpgpt-logo.png"
+                alt="TerpGPT"
+                className="inline-block w-40 h-40 p-10 fixed top-0 left-0"
+              />
+            </span>
+            <div className="ml-2">
+              <h1 className="text-4xl sm:text-6xl font-bold mb-8 leading-tight">
+                Welcome to TerpGPT
+              </h1>
+              <p className="text-xl mb-10 text-purple-100">
+                Your intelligent AI assistant for all university course
+                information. Ask any question, get instant answers!
+              </p>
+              <Button
+                variant="secondary"
+                size="lg"
+                className="font-semibold text-indigo-900 bg-white hover:bg-purple-100 transition-colors"
+                onClick={() => {
+                  router.push("/chat");
+                }}
+              >
+                Get Started
+                <ArrowRight className="ml-2" size={20} />
+              </Button>
+            </div>
           </div>
           <div className="space-y-8">
             <FeatureCard

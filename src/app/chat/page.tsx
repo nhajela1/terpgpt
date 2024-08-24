@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import reviews from "../../../python-backend/reviews.json";
+import { ThemeToggle } from "@/components/darktheme/darktheme";
 
 export default function ChatPage() {
   const [selectedSubject, setSelectedSubject] = useState("");
@@ -31,6 +32,8 @@ export default function ChatPage() {
   );
 
   return (
+    <> 
+    <ThemeToggle />
     <div className="h-screen bg-gray-100 p-4" id="chat-page">
       {/* Header */}
       {/* Filter section */}
@@ -97,5 +100,6 @@ export default function ChatPage() {
         <Chat></Chat>
       </div>
     </div>
+    </>
   );
 }

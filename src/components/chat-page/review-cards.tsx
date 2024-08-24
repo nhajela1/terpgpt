@@ -4,6 +4,7 @@ import React, { useEffect, useState, useRef } from "react";
 import ReactMarkdown from "react-markdown";
 import { Card, CardContent } from "@/components/ui/card";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
+import { useQueryState } from "nuqs";
 import { useTheme } from "next-themes";
 import ReactStars from "react-stars";
 
@@ -103,6 +104,10 @@ const ReviewCards: React.FC<ReviewCardsProps> = ({ reviews }) => {
   }
 
   const groupedReviews = groupReviews(reviews);
+
+  const [course, _] = useQueryState('course');
+  const [professor, __] = useQueryState('professor');
+
 
   return (
     <Card className="sm:w-full sm:h-auto">

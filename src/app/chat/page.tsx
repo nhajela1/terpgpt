@@ -1,19 +1,9 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, KeyboardEvent, useEffect } from "react";
 import Chat from "@/components/chat-page/chat";
 import ReviewCards from "@/components/chat-page/review-cards";
-import { Card, CardContent } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Label } from "@/components/ui/label";
-import reviews from "../../../python-backend/reviews.json";
 import { Review } from "@/components/chat-page/review-cards";
 
 interface ChatProps {
@@ -46,6 +36,11 @@ export default function ChatPage() {
     // Clean up the event listener
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  const panelDefaultSize = 20;
+  const panelMaxSize = 25;
+
+
 
   return (
     <>

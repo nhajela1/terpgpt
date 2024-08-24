@@ -1,4 +1,6 @@
-import React from "react";
+'use client';
+import React, { useState, ChangeEvent, FormEvent } from 'react';
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -12,11 +14,51 @@ import {
 import { Label } from "@/components/ui/label";
 import { Mail, MessageSquare, Send } from "lucide-react";
 
+interface FormData {
+  name: string;
+  email: string;
+  message: string;
+}
+
 const ContactSection: React.FC = () => {
-  const handleSubmit = (e: React.FormEvent) => {
+  const [formData, setFormData] = useState<FormData>({
+    name: '',
+    email: '',
+    message: '',
+  });
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prevData => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Handle form submission logic here
-    console.log("Form submitted");
+
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert(data.message || 'Your message has been sent!');
+        setFormData({ name: '', email: '', message: '' });
+      } else {
+        alert(data.message || 'There was a problem sending your message.');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('An unexpected error occurred. Please try again.');
+    }
   };
 
   return (
@@ -43,6 +85,9 @@ const ContactSection: React.FC = () => {
                     placeholder="Your name"
                     required
                     className="bg-white bg-opacity-20 text-white placeholder-purple-200"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
                   />
                 </div>
                 <div className="space-y-2">
@@ -55,6 +100,9 @@ const ContactSection: React.FC = () => {
                     placeholder="Your email"
                     required
                     className="bg-white bg-opacity-20 text-white placeholder-purple-200"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
                   />
                 </div>
                 <div className="space-y-2">
@@ -66,6 +114,9 @@ const ContactSection: React.FC = () => {
                     placeholder="Your message"
                     required
                     className="bg-white bg-opacity-20 text-white placeholder-purple-200"
+                    name="message"
+                    value={formData.message}
+                    onChange={handleChange}
                   />
                 </div>
                 <Button

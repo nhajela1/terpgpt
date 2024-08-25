@@ -135,7 +135,7 @@ const ContactSection: React.FC = () => {
           <div className="mt-10 flex justify-center space-x-8 text-white">
             <div className="flex items-center">
               <Mail className="mr-3 h-6 w-6 text-purple-300" />
-              <span>support@profsly.ai</span>
+              <span>terpgpt@gmail.com</span>
             </div>
             <div className="flex items-center">
               <MessageSquare className="mr-3 h-6 w-6 text-purple-300" />

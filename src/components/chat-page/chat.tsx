@@ -121,7 +121,7 @@ const Chat: React.FC<ChatProps> = ({ setReviews, messages, setMessages }) => {
   };
 
   return (
-    <div className="h-full w-full flex pl-4">
+    <div className="h-[84vh] w-full flex pl-0 sm:pl-4">
       <Card className="h-full w-full flex flex-col overflow-hidden">
         <ScrollArea className="flex-grow">
           <CardContent className="p-4">
@@ -139,7 +139,7 @@ const Chat: React.FC<ChatProps> = ({ setReviews, messages, setMessages }) => {
                       : theme === "dark" ||
                         (theme === "system" && systemTheme === "dark")
                       ? "bg-gray-800 text-white"
-                      : "bg-gray-200 text-blue-900"
+                      : "bg-gray-200 text-black-900"
                   }`}
                 >
                   <ReactMarkdown>{message.content}</ReactMarkdown>

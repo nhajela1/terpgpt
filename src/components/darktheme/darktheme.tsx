@@ -15,7 +15,7 @@ export function ThemeToggle() {
   const { setTheme } = useTheme()
 
   return (
-    <div className="fixed left-4 bottom-4 z-50">
+    <div className="fixed right-0 top-0 p-4 z-50">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="outline" size="icon" className="rounded-full w-9 h-9">

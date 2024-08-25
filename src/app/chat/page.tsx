@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import { useRouter } from 'next/navigation';
 import Chat from "@/components/chat-page/chat";
 import ReviewCards from "@/components/chat-page/review-cards";
 import { Card, CardContent } from "@/components/ui/card";
@@ -15,6 +16,7 @@ import {
 import { Label } from "@/components/ui/label";
 import reviews from "../../../python-backend/reviews.json";
 import { Review } from "@/components/chat-page/review-cards";
+import Home from "@/components/home/home";
 
 interface ChatProps {
   setReviews: React.Dispatch<React.SetStateAction<Review[]>>;
@@ -22,6 +24,7 @@ interface ChatProps {
 import { ThemeToggle } from "@/components/darktheme/darktheme";
 
 export default function ChatPage() {
+
   const [reviews, setReviews] = useState<Review[]>([]);
   const [isSmallScreen, setIsSmallScreen] = useState(false);
   const [messages, setMessages] = useState([
@@ -30,6 +33,7 @@ export default function ChatPage() {
       content: `Hi! I'm TerpGPT. How can I help you today?`,
     },
   ]);
+  
 
   // Detect screen width and set the state
   useEffect(() => {
@@ -49,6 +53,7 @@ export default function ChatPage() {
 
   return (
     <>
+      <Home />
       <ThemeToggle />
       <div className="h-screen p-4" id="chat-page">
         <div
@@ -70,7 +75,7 @@ export default function ChatPage() {
                   value="review"
                   style={{
                     minHeight: "calc(80vh)",
-                    maxHeight: "calc(90vh)",
+                    maxHeight: "calc(82vh)",
                     flex: 1,
                   }}
                 >
@@ -81,7 +86,7 @@ export default function ChatPage() {
                 value="chat"
                 style={{
                   minHeight: "calc(80vh)",
-                  maxHeight: "calc(90vh)",
+                  maxHeight: "calc(82vh)",
                   flex: 1,
                 }}
               >
@@ -94,7 +99,7 @@ export default function ChatPage() {
             </Tabs>
           ) : (
             <>
-              <div className="w-1/2 h-full overflow-y-auto">
+              <div className="w-1/2 h-[84vh] overflow-y-auto">
                 <ScrollArea>
                   <ReviewCards reviews={reviews} />
                 </ScrollArea>

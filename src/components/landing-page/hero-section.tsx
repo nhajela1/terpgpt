@@ -15,38 +15,43 @@ const HeroSection: React.FC = () => {
   const router = useRouter();
   return (
     <div className="bg-gradient-to-br from-purple-900 via-indigo-800 to-purple-800 text-white">
-      <div className="container mx-auto px-4 sm:py-20">
+      <div className="container mx-auto px-4 sm:py-5">
         <div className="grid grid-rows-1 lg:grid-rows-2 gap-8 items-center justify-center">
-          <div className="flex">
-            <span>
-              <img
-                src="/terpgpt-logo.png"
-                alt="TerpGPT"
-                className="inline-block w-40 h-40 p-10 fixed top-0 left-0"
-              />
-            </span>
-            <div className="ml-2">
-              <h1 className="text-4xl sm:text-6xl font-bold mb-8 leading-tight">
-                Welcome to TerpGPT
-              </h1>
-              <p className="text-xl mb-10 text-purple-100">
-                Your intelligent AI assistant for all university course
-                information. Ask any question, get instant answers!
-              </p>
-              <Button
-                variant="secondary"
-                size="lg"
-                className="font-semibold text-indigo-900 bg-white hover:bg-purple-100 transition-colors"
-                onClick={() => {
-                  router.push("/chat");
-                }}
-              >
-                Get Started
-                <ArrowRight className="ml-2" size={20} />
-              </Button>
-            </div>
+
+        <div className="flex flex-col items-center lg:flex-row lg:items-start lg:justify-center max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center lg:text-left mb-8 lg:mb-0 lg:mr-12">
+            <img
+              src="/terpgpt-logo.png"
+              alt="TerpGPT"
+              className="inline-block w-32 h-32 sm:w-40 sm:h-40 mb-6 lg:mb-0 mt-4"
+            />
           </div>
-          <div className="space-y-8">
+          <div className="max-w-2xl text-center lg:text-left">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+              Welcome to TerpGPT
+            </h1>
+            <p className="text-lg sm:text-xl mb-8 text-purple-100">
+              Your intelligent AI assistant for all university course
+              information. Ask any question, get instant answers!
+            </p>
+            <Button
+              variant="secondary"
+              size="lg"
+              className="font-semibold text-indigo-900 bg-white hover:bg-purple-100 transition-colors"
+              onClick={() => {
+                router.push("/chat");
+              }}
+            >
+              Get Started
+              <ArrowRight className="ml-2" size={20} />
+            </Button>
+          </div>
+        </div>
+
+
+
+
+          <div className="space-y-8 ">
             <FeatureCard
               icon={<BookOpen className="h-8 w-8" />}
               title="Comprehensive Course Info"

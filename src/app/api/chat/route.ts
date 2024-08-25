@@ -11,28 +11,30 @@ For every user question, the top 5 results that match the user question are retu
 Use them to answer the question if needed. Your answer should always be specifc to UMD.
 `
 
-async function extractQueryInfo(openai: OpenAI, query: string): Promise<{ professorName: string | null, courseNumber: string | null, queryType: 'professor' | 'course' | 'both' }> {
+async function extractQueryInfo(openai: OpenAI, query: string): Promise<{ professorNames: string[], courseNumbers: string[], queryType: 'professor' | 'course' | 'both' }> {
   const response = await openai.chat.completions.create({
     model: 'gpt-4o-mini',
     messages: [
-      { role: 'system', content: 'Extract the professor\'s name and course number from the query. Return a JSON object with "professorName" and "courseNumber" fields. If either is not mentioned, set the respective field to null.' },
+      { role: 'system', content: 'Extract professor names and course numbers from the query. Return a JSON object with "professorNames" (array of strings) and "courseNumbers" (array of strings) fields. If either is not mentioned, return an empty array for that field.' },
       { role: 'user', content: query }
     ],
     response_format: { type: 'json_object' },
     temperature: 0.3,
   });
   const extractedInfo = JSON.parse(response.choices[0].message.content || '{}');
-  const professorName = extractedInfo.professorName?.trim() || null;
-  const courseNumber = extractedInfo.courseNumber?.trim() || null;
-  const queryType = professorName && courseNumber ? 'both' : (professorName ? 'professor' : (courseNumber ? 'course' : 'both'));
-  return { professorName, courseNumber, queryType };
+  const professorNames = extractedInfo.professorNames || [];
+  const courseNumbers = extractedInfo.courseNumbers || [];
+  const queryType = professorNames.length > 0 && courseNumbers.length > 0 ? 'both' : 
+                    (professorNames.length > 0 ? 'professor' : 
+                    (courseNumbers.length > 0 ? 'course' : 'both'));
+  return { professorNames, courseNumbers, queryType };
 }
 
 async function filterRelevantProfessors(openai: OpenAI, query: string, professors: string[]): Promise<string[]> {
   const response = await openai.chat.completions.create({
     model: 'gpt-4o-mini',
     messages: [
-      { role: 'system', content: 'Given a user query and a list of professors, return a JSON object with a "relevant_professors" field containing the only professors that are relevant to the query. If no specific professor is mentioned or all are relevant, include all professors in the array.' },
+      { role: 'system', content: 'Given a user query and a list of professors, return a JSON object with a "relevant_professors" field containing ONLY the professors that are relevant to the query. If no specific professor is mentioned or all are relevant, include all professors in the array.' },
       { role: 'user', content: `Query: ${query}\nProfessors: ${professors.join(', ')}` }
     ],
     response_format: { type: 'json_object' },
@@ -47,7 +49,7 @@ async function filterRelevantCourses(openai: OpenAI, query: string, courses: str
   const response = await openai.chat.completions.create({
     model: 'gpt-4o-mini',
     messages: [
-      { role: 'system', content: 'Given a user query and a list of courses, return a JSON object with a "relevant_courses" field containing only the courses that are relevant to the query. If no specific course is mentioned or all are relevant, include all courses in the array.' },
+      { role: 'system', content: 'Given a user query and a list of courses, return a JSON object with a "relevant_courses" field containing ONLY the courses that are relevant to the query. If no specific course is mentioned or all are relevant, include all courses in the array.' },
       { role: 'user', content: `Query: ${query}\nCourses: ${courses.join(', ')}` }
     ],
     response_format: { type: 'json_object' },
@@ -76,7 +78,8 @@ export async function POST(req: Request) {
     const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_ANON_KEY!)
 
     const text = data[data.length - 1].content
-    const { professorName, courseNumber, queryType } = await extractQueryInfo(openai, text)
+    const { professorNames: extractedProfessors, courseNumbers, queryType } = await extractQueryInfo(openai, text)
+    console.log("Query Type", queryType)
 
     // Process user query
     const embedding = await openai.embeddings.create({
@@ -87,7 +90,7 @@ export async function POST(req: Request) {
 
     // Query Pinecone for the top 10 results that match the user query
     let results;
-    if (queryType === 'professor' || queryType === 'both') {
+    if (queryType === 'professor') {
         results = await professorIndex.query({
             topK: 10,
             includeMetadata: true,
@@ -169,7 +172,8 @@ export async function POST(req: Request) {
     }
 
     // Filter relevant professors using LLM
-    const relevantProfessors = await filterRelevantProfessors(openai, text, professorNames)
+    const relevantProfessors = await filterRelevantProfessors(openai, text, extractedProfessors)
+    console.log("Relevant professors:", relevantProfessors)
 
     // Filter reviews based on relevant professors
     reviews = reviews.filter(review => relevantProfessors.includes(review.professor))

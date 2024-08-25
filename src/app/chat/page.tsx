@@ -86,12 +86,8 @@ export default function ChatPage() {
                   setCourses={setCourses}
                   messages={messages}
                   setMessages={setMessages}
-                  isLoading={false}
-                  setIsLoading={function (
-                    value: React.SetStateAction<boolean>
-                  ): void {
-                    throw new Error("Function not implemented.");
-                  }}
+                  isLoading={isLoading}
+                  setIsLoading={setIsLoading}
                 />
               </TabsContent>
             </Tabs>

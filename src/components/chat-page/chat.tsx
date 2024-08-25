@@ -65,7 +65,6 @@ const Chat: React.FC<ChatProps> = ({ setReviews, messages, setMessages }) => {
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
       let result = "";
-      let reviewsSet = false;
 
       while (true) {
         const { done, value } = await reader.read();
@@ -73,22 +72,30 @@ const Chat: React.FC<ChatProps> = ({ setReviews, messages, setMessages }) => {
         const text = decoder.decode(value, { stream: true });
         result += text;
 
-        if (!reviewsSet) {
-          try {
-            const data = JSON.parse(result);
-            if (data.reviews) {
-              const processedReviews = data.reviews.map((review: any) => ({
-                ...review,
-                courses: review.courses.split(", "),
-              }));
-              setReviews(processedReviews);
-              reviewsSet = true;
-              result = "";
-            }
-          } catch (e) {
-            // Not valid JSON yet, continue reading
+        try {
+          const data = JSON.parse(result);
+          if (data.reviews && data.reviews.length > 0) {
+            const processedReviews = data.reviews.map((review: any) => ({
+              ...review,
+              courses:
+                typeof review.courses === "string"
+                  ? review.courses.split(", ")
+                  : review.courses,
+            }));
+            setReviews(processedReviews);
+            result = "";
+          } else {
+            setMessages((messages) => {
+              let lastMessage = messages[messages.length - 1];
+              let otherMessages = messages.slice(0, messages.length - 1);
+              return [
+                ...otherMessages,
+                { ...lastMessage, content: lastMessage.content + text },
+              ];
+            });
           }
-        } else {
+        } catch (e) {
+          // If it's not valid JSON, it's likely part of the chat response
           setMessages((messages) => {
             let lastMessage = messages[messages.length - 1];
             let otherMessages = messages.slice(0, messages.length - 1);

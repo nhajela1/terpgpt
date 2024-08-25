@@ -2,27 +2,17 @@
 import React, { useState, useEffect } from "react";
 import Chat from "@/components/chat-page/chat";
 import ReviewCards from "@/components/chat-page/review-cards";
+import CourseCards from "@/components/chat-page/course-cards";
 import { Card, CardContent } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Label } from "@/components/ui/label";
-import reviews from "../../../python-backend/reviews.json";
-import { Review } from "@/components/chat-page/review-cards";
-
-interface ChatProps {
-  setReviews: React.Dispatch<React.SetStateAction<Review[]>>;
-}
 import { ThemeToggle } from "@/components/darktheme/darktheme";
+import { Review } from "@/components/chat-page/review-cards";
+import { CourseInfo } from "@/components/chat-page/course-cards";
 
 export default function ChatPage() {
   const [reviews, setReviews] = useState<Review[]>([]);
+  const [courses, setCourses] = useState<CourseInfo[]>([]);
   const [isSmallScreen, setIsSmallScreen] = useState(false);
   const [messages, setMessages] = useState([
     {
@@ -30,6 +20,8 @@ export default function ChatPage() {
       content: `Hi! I'm TerpGPT. How can I help you today?`,
     },
   ]);
+
+  console.log("Current courses state:", courses);
 
   // Detect screen width and set the state
   useEffect(() => {
@@ -62,19 +54,22 @@ export default function ChatPage() {
               className="w-full flex flex-col y-overflow-auto"
             >
               <TabsList>
-                <TabsTrigger value="review">Reviews</TabsTrigger>
+                <TabsTrigger value="info">Info</TabsTrigger>
                 <TabsTrigger value="chat">Chat</TabsTrigger>
               </TabsList>
               <ScrollArea>
                 <TabsContent
-                  value="review"
+                  value="info"
                   style={{
                     minHeight: "calc(80vh)",
                     maxHeight: "calc(90vh)",
                     flex: 1,
                   }}
                 >
-                  <ReviewCards reviews={reviews} />
+                  <ScrollArea>
+                    {reviews.length > 0 && <ReviewCards reviews={reviews} />}
+                    {courses.length > 0 && <CourseCards courses={courses} />}
+                  </ScrollArea>
                 </TabsContent>
               </ScrollArea>
               <TabsContent
@@ -87,6 +82,7 @@ export default function ChatPage() {
               >
                 <Chat
                   setReviews={setReviews}
+                  setCourses={setCourses}
                   messages={messages}
                   setMessages={setMessages}
                 />
@@ -96,11 +92,13 @@ export default function ChatPage() {
             <>
               <div className="w-1/2 h-full overflow-y-auto">
                 <ScrollArea>
-                  <ReviewCards reviews={reviews} />
+                  {reviews.length > 0 && <ReviewCards reviews={reviews} />}
+                  {courses.length > 0 && <CourseCards courses={courses} />}
                 </ScrollArea>
               </div>
               <Chat
                 setReviews={setReviews}
+                setCourses={setCourses}
                 messages={messages}
                 setMessages={setMessages}
               />

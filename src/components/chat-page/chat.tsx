@@ -9,16 +9,23 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import reviews from "../../../python-backend/reviews.json";
 import { useTheme } from "next-themes";
 import { Review } from "./review-cards";
+import { CourseInfo } from "./course-cards";
 
 interface ChatProps {
   setReviews: React.Dispatch<React.SetStateAction<Review[]>>;
+  setCourses: React.Dispatch<React.SetStateAction<CourseInfo[]>>;
   messages: { role: string; content: string }[];
   setMessages: React.Dispatch<
     React.SetStateAction<{ role: string; content: string }[]>
   >;
 }
 
-const Chat: React.FC<ChatProps> = ({ setReviews, messages, setMessages }) => {
+const Chat: React.FC<ChatProps> = ({
+  setReviews,
+  setCourses,
+  messages,
+  setMessages,
+}) => {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [selectedSubject, setSelectedSubject] = useState("");
@@ -73,22 +80,35 @@ const Chat: React.FC<ChatProps> = ({ setReviews, messages, setMessages }) => {
         const text = decoder.decode(value, { stream: true });
         result += text;
 
-        if (!reviewsSet) {
-          try {
-            const data = JSON.parse(result);
-            if (data.reviews) {
+        try {
+          const data = JSON.parse(result);
+          if (data.reviews || data.courseInfo) {
+            if (data.reviews && data.reviews.length > 0) {
               const processedReviews = data.reviews.map((review: any) => ({
                 ...review,
-                courses: review.courses.split(", "),
+                courses:
+                  typeof review.courses === "string"
+                    ? review.courses.split(", ")
+                    : review.courses,
               }));
               setReviews(processedReviews);
-              reviewsSet = true;
-              result = "";
             }
-          } catch (e) {
-            // Not valid JSON yet, continue reading
+            if (data.courseInfo && data.courseInfo.length > 0) {
+              setCourses(data.courseInfo);
+            }
+            result = "";
+          } else {
+            setMessages((messages) => {
+              let lastMessage = messages[messages.length - 1];
+              let otherMessages = messages.slice(0, messages.length - 1);
+              return [
+                ...otherMessages,
+                { ...lastMessage, content: lastMessage.content + text },
+              ];
+            });
           }
-        } else {
+        } catch (e) {
+          // If it's not valid JSON, it's likely part of the chat response
           setMessages((messages) => {
             let lastMessage = messages[messages.length - 1];
             let otherMessages = messages.slice(0, messages.length - 1);

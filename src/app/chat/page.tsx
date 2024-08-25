@@ -20,6 +20,7 @@ export default function ChatPage() {
       content: `Hi! I'm TerpGPT. How can I help you today?`,
     },
   ]);
+  const [isLoading, setIsLoading] = useState(false);
 
   console.log("Current courses state:", courses);
 
@@ -85,6 +86,12 @@ export default function ChatPage() {
                   setCourses={setCourses}
                   messages={messages}
                   setMessages={setMessages}
+                  isLoading={false}
+                  setIsLoading={function (
+                    value: React.SetStateAction<boolean>
+                  ): void {
+                    throw new Error("Function not implemented.");
+                  }}
                 />
               </TabsContent>
             </Tabs>
@@ -101,6 +108,8 @@ export default function ChatPage() {
                 setCourses={setCourses}
                 messages={messages}
                 setMessages={setMessages}
+                isLoading={isLoading}
+                setIsLoading={setIsLoading}
               />
             </>
           )}

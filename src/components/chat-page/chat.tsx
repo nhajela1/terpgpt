@@ -10,6 +10,7 @@ import reviews from "../../../python-backend/reviews.json";
 import { useTheme } from "next-themes";
 import { Review } from "./review-cards";
 import { CourseInfo } from "./course-cards";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface ChatProps {
   setReviews: React.Dispatch<React.SetStateAction<Review[]>>;
@@ -18,6 +19,8 @@ interface ChatProps {
   setMessages: React.Dispatch<
     React.SetStateAction<{ role: string; content: string }[]>
   >;
+  isLoading: boolean;
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const Chat: React.FC<ChatProps> = ({
@@ -25,11 +28,10 @@ const Chat: React.FC<ChatProps> = ({
   setCourses,
   messages,
   setMessages,
+  isLoading,
+  setIsLoading,
 }) => {
   const [message, setMessage] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [selectedSubject, setSelectedSubject] = useState("");
-  const [selectedProfessor, setSelectedProfessor] = useState("");
   const { theme, systemTheme } = useTheme();
 
   // Mock data for classes and professors
@@ -42,7 +44,7 @@ const Chat: React.FC<ChatProps> = ({
 
   const sendMessage = async () => {
     if (message.trim() === "") return;
-    setLoading(true);
+    setIsLoading(true);
     setMessage("");
 
     const fullMessage = message;
@@ -129,7 +131,7 @@ const Chat: React.FC<ChatProps> = ({
         },
       ]);
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
@@ -166,6 +168,13 @@ const Chat: React.FC<ChatProps> = ({
                 </div>
               </div>
             ))}
+            {isLoading && (
+              <div className="space-y-2">
+                <Skeleton className="h-4 w-3/4" />
+                <Skeleton className="h-4 w-1/2" />
+                <Skeleton className="h-4 w-5/6" />
+              </div>
+            )}
           </CardContent>
         </ScrollArea>
         <CardFooter className="flex p-4 border-t">
@@ -179,10 +188,10 @@ const Chat: React.FC<ChatProps> = ({
             />
             <Button
               onClick={sendMessage}
-              disabled={loading || message.trim() === ""}
+              disabled={isLoading || message.trim() === ""}
               className="bg-blue-500 hover:bg-blue-600 text-white"
             >
-              {loading ? (
+              {isLoading ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
               ) : (
                 <Send className="h-4 w-4" />

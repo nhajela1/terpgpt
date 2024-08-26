@@ -11,22 +11,22 @@ const FAQSection: React.FC = () => {
     {
       question: "What is TerpGPT?",
       answer:
-        "TerpGPT is an intelligent assistant trained on professor and course information from universities. It can answer a wide range of questions about courses, professors, and academic programs.",
+        "TerpGPT is an intelligent assistant trained on professor information from UMD. It can provide details about professors, students' reviews and more.",
     },
     {
       question: "How accurate is the information provided by TerpGPT?",
       answer:
-        "TerpGPT is trained on up-to-date information from university databases. However, we always recommend verifying critical information with official university sources.",
+        "TerpGPT is trained on up-to-date information from UMD databases. However, we always recommend verifying critical information with official university sources.",
     },
-    {
-      question: "Can TerpGPT help with course selection?",
-      answer:
-        "Yes! TerpGPT can provide detailed information about courses, including prerequisites, course content, and professor teaching styles to help you make informed decisions about your course selection.",
-    },
+    // {
+    //   question: "Can TerpGPT help with course selection?",
+    //   answer:
+    //     "Yes! TerpGPT can provide detailed information about courses, including prerequisites, course content, and professor teaching styles to help you make informed decisions about your course selection.",
+    // },
     {
       question: "Is TerpGPT available 24/7?",
       answer:
-        "Absolutely! You can access TerpGPT anytime, day or night, to get answers to your questions about university courses and professors.",
+        "Absolutely! You can access TerpGPT anytime, day or night, to get answers to your questions about UMD professors.",
     },
     {
       question: "How does TerpGPT handle privacy and data protection?",

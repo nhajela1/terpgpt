@@ -31,7 +31,7 @@ const HeroSection: React.FC = () => {
               Welcome to TerpGPT
             </h1>
             <p className="text-lg sm:text-xl mb-8 text-purple-100">
-              Your intelligent AI assistant for all university course
+              Your intelligent AI assistant for all UMD professor 
               information. Ask any question, get instant answers!
             </p>
             <Button
@@ -52,11 +52,6 @@ const HeroSection: React.FC = () => {
 
 
           <div className="space-y-8 ">
-            <FeatureCard
-              icon={<BookOpen className="h-8 w-8" />}
-              title="Comprehensive Course Info"
-              description="Access detailed information about any university course."
-            />
             <FeatureCard
               icon={<GraduationCap className="h-8 w-8" />}
               title="Professor Insights"

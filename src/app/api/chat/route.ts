@@ -100,7 +100,7 @@ export async function POST(req: Request) {
             continue
         }
 
-        const courses = courseData.map(course => course.course).join(', ')
+        const courses = courseData.map((course: { course: string }) => course.course).join(', ')
 
         reviews.push({
             professor: professorData.name,
